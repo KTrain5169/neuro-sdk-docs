@@ -1,0 +1,26 @@
+{
+  "name": "neuro-sdk-docs",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "~4.2.6",
+    "@astrojs/starlight": "~0.34.2",
+    "astro": "~5.7.10",
+    "sharp": "~0.32.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "~0.9.4",
+    "@cloudflare/workers-types": "~4.20250503.0",
+    "prettier": "~3.5.3",
+    "typescript": "~5.8.3",
+    "wrangler": "~4.14.1"
+  }
+}
