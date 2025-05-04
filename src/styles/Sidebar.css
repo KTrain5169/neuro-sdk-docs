@@ -25,6 +25,7 @@
     border-color 0.2s ease;
   display: flex;
   align-items: center;
+  margin-bottom: 0.5em;
 }
 
 .sidebar-button:hover {
@@ -64,4 +65,68 @@
 
 .sidebar-item:hover {
   background-color: #eaeaea;
+}
+
+.sidebar-group {
+  /* Give top-level groups a little spacing */
+  margin-bottom: 0.5em;
+}
+
+.sidebar-group-label {
+  font-weight: bold;
+  color: #f5f5f5;
+  padding: 0.5em 1em;
+  background-color: #f5f5f5;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  cursor: default;
+}
+
+.sidebar-group-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;  /* small vertical gap between items */
+  padding: 0.25em; /* small padding around the group */
+  margin-left: 1em;
+  margin-top: 0.25em;
+}
+
+/* Dropdown styling applies only to nested groups (depth > 0) */
+.dropdown {
+  border-left: 3px solid #eaeaea;
+  padding-left: 0.5em;
+}
+
+/* Adjust header styling so it’s not a big button */
+.sidebar-group-header {
+  display: flex;
+  align-items: center;
+  padding: 0.2em 0.5em;  /* reduce padding */
+  border: none;          /* remove border */
+  background: none;      /* remove background */
+  cursor: pointer;
+}
+
+/* The label now is plain text */
+.sidebar-group-label {
+  font-weight: bold;
+  color: #ffffff;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+/* Make the toggle a small clickable arrow */
+.dropdown-toggle {
+  margin-left: auto;
+  font-size: 0.8em;
+  color: #ffffff;  /* example: set arrow color to orange; change to your preference */
+  cursor: pointer;
+}
+
+/* Ensure the entire dropdown header (label and toggle) shows the pointer on hover */
+.sidebar-group-header:hover,
+.sidebar-group-label:hover,
+.dropdown-toggle:hover {
+  cursor: pointer;
 }
