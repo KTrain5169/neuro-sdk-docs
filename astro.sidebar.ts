@@ -1,8 +1,36 @@
 import { group } from "./config/sidebar";
 import type { ComponentType } from "preact";
 import type { StarlightUserConfig } from "@astrojs/starlight/types";
-import { SiJavascript, SiPython } from "react-icons/si";
-import { FaRobot, FaWifi } from "react-icons/fa";
+import {
+  SiC,
+  SiGamemaker,
+  SiGodotengine,
+  SiHtml5,
+  SiJavascript,
+  SiLua,
+  SiOpenai,
+  SiPython,
+  SiRust,
+  SiTypescript,
+  SiUnity,
+} from "react-icons/si";
+import {
+  FaRobot,
+  FaWifi,
+  FaWrench,
+  FaGamepad,
+  FaQuestionCircle,
+  FaJava,
+  FaFileArchive,
+  FaHandPointLeft,
+  FaPlusCircle,
+  FaMinusCircle,
+  FaServer,
+  FaDice,
+  FaKeyboard,
+  FaBrain,
+  FaHardHat,
+} from "react-icons/fa";
 
 /**
  * A “raw” group lets you nest either:
@@ -37,12 +65,39 @@ const raw: RawGroup[] = [
     items: [
       {
         key: "actions",
+        subdir: "base/actions",
         label: "Actions",
+        icon: FaHandPointLeft,
         items: [
-          "actions/register"
-        ]
-      }
-    ]
+          {
+            key: "register",
+            label: "Register",
+            icon: FaPlusCircle,
+            slug: "register",
+          },
+          {
+            key: "unregister",
+            label: "Unregister",
+            icon: FaMinusCircle,
+            slug: "unregister",
+          },
+          "force",
+        ],
+      },
+      {
+        key: "context",
+        label: "Context",
+        icon: FaFileArchive,
+        slug: "context",
+      },
+      {
+        key: "proposals",
+        subdir: "proposals",
+        label: "API Proposals",
+        icon: FaQuestionCircle,
+        items: [],
+      },
+    ],
   },
   {
     key: "simulators",
@@ -50,11 +105,67 @@ const raw: RawGroup[] = [
     label: "Neuro Simulators",
     icon: FaRobot,
     items: [
-      "Randy",
-      "Tony",
-      "Jippity",
-      "Gary"
-    ]
+      {
+        key: "randy",
+        label: "Randy",
+        icon: FaDice,
+        slug: "randy",
+      },
+      {
+        key: "tony",
+        label: "Tony",
+        icon: FaKeyboard,
+        slug: "tony",
+      },
+      {
+        key: "jippity",
+        label: "Jippity",
+        icon: SiOpenai,
+        slug: "jippity",
+      },
+      {
+        key: "gary",
+        label: "Gary",
+        icon: FaBrain,
+        slug: "gary",
+      },
+    ],
+  },
+  {
+    key: "game_engines",
+    subdir: "engines",
+    label: "SDKs for Game Engines",
+    icon: FaGamepad,
+    items: [
+      {
+        key: "unity",
+        subdir: "unity",
+        label: "Unity SDK",
+        icon: SiUnity,
+        items: [],
+      },
+      {
+        key: "godot",
+        subdir: "gdot",
+        label: "Godot SDK (GDScript)",
+        icon: SiGodotengine,
+        items: [],
+      },
+      {
+        key: "gamemaker",
+        subdir: "gmaker",
+        label: "Gamemaker SDK",
+        icon: SiGamemaker,
+        items: [],
+      },
+    ],
+  },
+  {
+    key: "rust",
+    subdir: "rs",
+    label: "Rust SDK",
+    icon: SiRust,
+    items: [],
   },
   {
     key: "javascript",
@@ -65,29 +176,51 @@ const raw: RawGroup[] = [
       {
         key: "javascript.typescript",
         label: "TypeScript",
-        slug: "typescript"
+        icon: SiTypescript,
+        slug: "typescript",
+      },
+      {
+        key: "javascript.browser",
+        label: "Browser HTML",
+        icon: SiHtml5,
+        slug: "browser",
       },
       {
         key: "javascript.overview",
         label: "Overview",
-        icon: SiJavascript,
         items: [
           "concepts/architecture",
           "concepts/connection",
-          "tutorial/getting-started",
-        ]
+          "tutorial/getting_started",
+        ],
       },
       {
         key: "javascript.api",
         label: "API Reference",
-        icon: SiJavascript,
-        items: [
-          "api/connection",
-          "api/messaging",
-          "api/errors",
-        ],
+        items: ["api/connection", "api/messaging", "api/errors"],
       },
     ],
+  },
+  {
+    key: "java",
+    subdir: "jar",
+    label: "Java SDK",
+    icon: FaJava,
+    items: [],
+  },
+  {
+    key: "lua",
+    subdir: "lua",
+    label: "Lua SDK",
+    icon: SiLua,
+    items: [],
+  },
+  {
+    key: "c",
+    subdir: "c",
+    label: "C SDK",
+    icon: SiC,
+    items: ["overview"],
   },
   {
     key: "python",
@@ -98,7 +231,6 @@ const raw: RawGroup[] = [
       {
         key: "python.overview",
         label: "Overview",
-        icon: SiPython,
         items: [
           "concepts/architecture",
           "concepts/connection",
@@ -108,18 +240,27 @@ const raw: RawGroup[] = [
       {
         key: "python.api",
         label: "API Reference",
-        icon: SiPython,
-        items: [
-          "api/connection",
-          "api/messaging",
-          "api/errors",
-        ],
+        items: ["api/connection", "api/messaging", "api/errors"],
+      },
+    ],
+  },
+  {
+    key: "more_tools",
+    subdir: "tools",
+    label: "Other tools",
+    icon: FaWrench,
+    items: [
+      {
+        key: "web_game_runner",
+        label: "Web Game Runner",
+        icon: FaServer,
+        slug: "webgamerunner",
       },
     ],
   },
 ];
 
-/** 
+/**
  * Recursively transform a RawGroup into what Starlight needs.
  * If an item is a string or a PageButton (detected via its slug property),
  * convert it into a path. (Do not add the parent’s subdir here.)
@@ -131,14 +272,21 @@ function toStarlight(r: RawGroup) {
       const slug = item.toLowerCase();
       // Prefix with the parent subdir (if it exists).
       return r.subdir ? `${r.subdir.toLowerCase()}/${slug}` : slug;
-    } else if (typeof item === "object" && "slug" in item && typeof item.slug === "string") {
+    } else if (
+      typeof item === "object" &&
+      "slug" in item &&
+      typeof item.slug === "string"
+    ) {
       // Process PageButton objects.
       const slug = item.slug.toLowerCase();
       return r.subdir ? `${r.subdir.toLowerCase()}/${slug}` : slug;
     } else {
       // Process nested RawGroup.
       const newGroup = item as RawGroup;
-      const newItem: RawGroup = { ...newGroup, subdir: newGroup.subdir || r.subdir };
+      const newItem: RawGroup = {
+        ...newGroup,
+        subdir: newGroup.subdir || r.subdir,
+      };
       return toStarlight(newItem);
     }
   });
@@ -156,18 +304,21 @@ function toStarlight(r: RawGroup) {
 }
 
 /**
- * Recursively transform a RawGroup into what your Preact island needs.
- * For each item, if it's a string or a PageButton, return a string path.
- * Otherwise, recursively transform a nested group.
+ * Update the IconGroup interface to allow PageButton objects.
  */
 export interface IconGroup {
   label: string;
   subdir: string | undefined;
   icon: ComponentType<{ className?: string }> | undefined;
-  items: Array<string | IconGroup>;
+  items: Array<string | PageButton | IconGroup>;
   collapsed?: boolean;
   autogenerate?: { directory: string };
 }
+
+/**
+ * Recursively transform a RawGroup into what your Preact island needs.
+ * For PageButton objects, return the full object (preserving label, slug, icon).
+ */
 function toIconGroup(r: RawGroup): IconGroup {
   return {
     label: r.label,
@@ -178,9 +329,13 @@ function toIconGroup(r: RawGroup): IconGroup {
     items: r.items.map((item) => {
       if (typeof item === "string") {
         return item.toLowerCase();
-      } else if (typeof item === "object" && "slug" in item && typeof item.slug === "string") {
-        // Convert PageButton objects to string path.
-        return item.slug.toLowerCase();
+      } else if (
+        typeof item === "object" &&
+        "slug" in item &&
+        typeof item.slug === "string"
+      ) {
+        // Instead of returning only the slug, return the object to preserve the label.
+        return item as PageButton;
       } else {
         return toIconGroup(item as RawGroup);
       }

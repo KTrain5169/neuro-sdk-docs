@@ -1,36 +1,44 @@
 ---
-title: Styles
+title: Unofficial Neuro Game SDK docs
 description: Get started building your docs site with Starlight.
 template: splash
 hero:
-  tagline: Congrats on setting up a new Starlight project!
+  tagline: Compilation of docs + examples of using the Neuro Game SDKs, both official and community ones.
   image:
-    file: ../../assets/houston.webp
+    file: ../../assets/neuro-sdk-icon.png
   actions:
-    - text: Example Guide
-      link: /guides/example/
+    - text: View protocol docs
+      link: /base/overview
       icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
+      variant: primary
+    - text: Official repository with specs
+      link: https://github.com/VedalAI/neuro-game-sdk
       icon: external
       variant: minimal
+    - text: vedal987 & Neuro-sama's Twitch channel
+      link: https://twitch.tv/vedal987
+      icon: twitch
+      variant: secondary
 ---
 
 import { Card, CardGrid } from "@astrojs/starlight/components";
 
-## Next steps
+## Learn, integrate, share
 
 <CardGrid stagger>
-  <Card title="Update content" icon="pencil">
-    Edit `src/content/docs/index.mdx` to see this page change.
+  <Card title="Adapted SDKs" icon="document">
+    View information about the Neuro Game SDKs for your programming language.
   </Card>
-  <Card title="Add new content" icon="add-document">
-    Add Markdown or MDX files to `src/content/docs` to create new pages.
+  <Card title="Simulators" icon="heart">
+    Need to test your integrations? There's also a list for simulators to act as
+    Neuro for testing purposes.
   </Card>
-  <Card title="Configure your site" icon="setting">
-    Edit your `sidebar` and other config in `astro.config.mjs`.
+  <Card title="Other tools" icon="signal">
+    Any other potentially useful tools are also documented here, such as the Web
+    Game Runner.
   </Card>
-  <Card title="Read the docs" icon="open-book">
-    Learn more in [the Starlight Docs](https://starlight.astro.build/).
+  <Card title="Fix mistakes" icon="pencil">
+    Spot mistakes? This open-source site runs off mostly Markdown documents, so
+    you can easily fix it.
   </Card>
 </CardGrid>

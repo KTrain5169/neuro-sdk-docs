@@ -1,3 +1,3 @@
 ---
-title: Register
+title: Register actions
 ---

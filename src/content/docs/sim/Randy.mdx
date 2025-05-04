@@ -1,0 +1,52 @@
+---
+title: Randy
+---
+
+import { Tabs, TabItem, Code } from "@astrojs/starlight/components";
+
+Randy (aka Random Dot Range) is a JavaScript Neuro simulator that makes random choices when forced to do an action. This can be useful as a basic, low-latency testing tool to test your integrations.
+
+You can also tell Randy to do an action by itself using a POST request to its HTTP endpoint.
+
+Randy is maintained by Alex, and can be found [here](https://github.com/VedalAI/neuro-game-sdk/tree/main/Randy).
+
+## Startup
+
+On startup, Randy occupies ports 8080 (WebSocket) and 1337 (HTTP) and will begin listening for packets.
+
+Randy will immediately respond to `actions/force` packets with a random selection and mock data for the schema (if one is required). Otherwise, Randy will not respond or react to any packets (other than the registration and unregistration of actions).
+
+If desired, you can make a POST request to Randy's HTTP port to simulate Neuro manually selecting an action using the following example:
+
+```bash
+curl --request POST \
+  --url http://localhost:1337/ \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "command": "action",
+    "data": {
+        "id": "blegh",
+        "name": "join_friend_lobby",
+        "data": "{\"friend_name\": \"jerma985\"}"
+    }
+}'
+```
+
+## Known issues
+
+- Randy sometimes won't let go of his HTTP port when closing. You can fix this with the following command:
+
+<Tabs syncKey="package-manager">
+  <TabItem label="npm">
+    <Code code="npx kill-port 1337" lang="sh" />
+  </TabItem>
+  <TabItem label="yarn">
+    <Code code="yarn dlx kill-port 1337" lang="sh" />
+  </TabItem>
+  <TabItem label="pnpm">
+    <Code
+      code={`pnpx kill-port 1337\n# or\npnpm dlx kill-port 1337`}
+      lang="sh"
+    />
+  </TabItem>
+</Tabs>

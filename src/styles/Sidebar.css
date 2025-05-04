@@ -33,9 +33,8 @@
 }
 
 .sidebar-button.active {
-  background-color: #0055aa; /* Starlight-inspired blue */
+  background-color: #00aa93; /* Starlight-inspired blue */
   border-color: #0055aa;
-  color: #fff;
 }
 
 .sidebar-icon {
@@ -54,16 +53,19 @@
 .sidebar-item {
   text-decoration: none;
   padding: 0.5em 1em;
-  background-color: #f9f9f9;
   border: 1px solid #eaeaea;
   border-radius: 8px; /* Rounded corners */
   transition:
     background-color 0.2s ease,
     border-color 0.2s ease;
-  color: #333;
 }
 
-.sidebar-item:hover {
+.sidebar-item.active {
+  background-color: #2092b4; /* Starlight-inspired blue */
+  border-color: #0055aa;
+}
+
+.sidebar-item:hover:not(.active) {
   background-color: #eaeaea;
 }
 
@@ -74,7 +76,6 @@
 
 .sidebar-group-label {
   font-weight: bold;
-  color: #f5f5f5;
   padding: 0.5em 1em;
   background-color: #f5f5f5;
   border: 1px solid #eaeaea;
@@ -85,7 +86,7 @@
 .sidebar-group-items {
   display: flex;
   flex-direction: column;
-  gap: 0.25em;  /* small vertical gap between items */
+  gap: 0.25em; /* small vertical gap between items */
   padding: 0.25em; /* small padding around the group */
   margin-left: 1em;
   margin-top: 0.25em;
@@ -101,16 +102,15 @@
 .sidebar-group-header {
   display: flex;
   align-items: center;
-  padding: 0.2em 0.5em;  /* reduce padding */
-  border: none;          /* remove border */
-  background: none;      /* remove background */
+  padding: 0.2em 0.5em; /* reduce padding */
+  border: none; /* remove border */
+  background: none; /* remove background */
   cursor: pointer;
 }
 
 /* The label now is plain text */
 .sidebar-group-label {
   font-weight: bold;
-  color: #ffffff;
   background: none;
   border: none;
   padding: 0;
@@ -120,7 +120,7 @@
 .dropdown-toggle {
   margin-left: auto;
   font-size: 0.8em;
-  color: #ffffff;  /* example: set arrow color to orange; change to your preference */
+  /*color: #ffffff; /* example: set arrow color to orange; change to your preference */
   cursor: pointer;
 }
 
@@ -129,4 +129,17 @@
 .sidebar-group-label:hover,
 .dropdown-toggle:hover {
   cursor: pointer;
+}
+
+/* Move icons on buttons down so it doesn't look misplaced */
+.sidebar-icon.page {
+  transform: translateY(4px);
+}
+
+.sidebar-icon.group {
+  transform: translateY(-2px);
+}
+
+.sidebar-icon.category {
+  transform: translateY(-2px);
 }
