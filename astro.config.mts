@@ -11,12 +11,12 @@ import preact from "@astrojs/preact";
 export default defineConfig({
   integrations: [
     starlight({
-      title: "My Docs",
+      title: "Unofficial Neuro Game SDK docs",
       social: [
         {
           icon: "github",
           label: "GitHub",
-          href: "https://github.com/withastro/starlight",
+          href: "https://github.com/KTrain5169/neuro-sdk-docs",
         },
       ],
       sidebar,
