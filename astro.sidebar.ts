@@ -1,4 +1,4 @@
-import { group } from "./config/sidebar";
+import { group as makeGroup } from "./config/sidebar"; // renamed import to avoid shadowing
 import type { ComponentType } from "preact";
 import type { StarlightUserConfig } from "@astrojs/starlight/types";
 import {
@@ -7,6 +7,7 @@ import {
   SiGodotengine,
   SiHtml5,
   SiJavascript,
+  SiKotlin,
   SiLua,
   SiOpenai,
   SiPython,
@@ -30,6 +31,8 @@ import {
   FaKeyboard,
   FaBrain,
   FaHardHat,
+  FaExclamationCircle,
+  FaInfoCircle,
 } from "react-icons/fa";
 
 /**
@@ -56,7 +59,13 @@ export interface PageButton {
 }
 
 /** Your one source-of-truth, with nested groups: */
-const raw: RawGroup[] = [
+const raw: (RawGroup | PageButton)[] = [
+  {
+    key: "overview",
+    label: "API Overview",
+    icon: FaInfoCircle,
+    slug: "overview",
+  },
   {
     key: "protocol",
     subdir: "base",
@@ -81,7 +90,12 @@ const raw: RawGroup[] = [
             icon: FaMinusCircle,
             slug: "unregister",
           },
-          "force",
+          {
+            key: "force",
+            label: "Force",
+            icon: FaExclamationCircle,
+            slug: "force",
+          },
         ],
       },
       {
@@ -245,6 +259,13 @@ const raw: RawGroup[] = [
     ],
   },
   {
+    key: "kotlin",
+    subdir: "kt",
+    label: "Kotlin SDK",
+    icon: SiKotlin,
+    items: [],
+  },
+  {
     key: "more_tools",
     subdir: "tools",
     label: "Other tools",
@@ -261,47 +282,47 @@ const raw: RawGroup[] = [
 ];
 
 /**
- * Recursively transform a RawGroup into what Starlight needs.
- * If an item is a string or a PageButton (detected via its slug property),
- * convert it into a path. (Do not add the parent’s subdir here.)
+ * Create a helper that transforms a RawGroup | PageButton or string into a Starlight path.
  */
-function toStarlight(r: RawGroup) {
-  const childItems = r.items.map((item) => {
-    if (typeof item === "string") {
-      // Process plain strings.
-      const slug = item.toLowerCase();
-      // Prefix with the parent subdir (if it exists).
-      return r.subdir ? `${r.subdir.toLowerCase()}/${slug}` : slug;
-    } else if (
-      typeof item === "object" &&
-      "slug" in item &&
-      typeof item.slug === "string"
-    ) {
-      // Process PageButton objects.
-      const slug = item.slug.toLowerCase();
-      return r.subdir ? `${r.subdir.toLowerCase()}/${slug}` : slug;
-    } else {
-      // Process nested RawGroup.
-      const newGroup = item as RawGroup;
-      const newItem: RawGroup = {
-        ...newGroup,
-        subdir: newGroup.subdir || r.subdir,
-      };
-      return toStarlight(newItem);
-    }
-  });
-
+function transformToStarlight(
+  item: string | RawGroup | PageButton,
+  parentSubdir?: string,
+): any {
+  if (typeof item === "string") {
+    const slug = item.toLowerCase();
+    // Use parent's subdir if it exists.
+    return parentSubdir ? `${parentSubdir.toLowerCase()}/${slug}` : slug;
+  }
+  if ("slug" in item && typeof item.slug === "string") {
+    const slug = item.slug.toLowerCase();
+    return parentSubdir ? `${parentSubdir.toLowerCase()}/${slug}` : slug;
+  }
+  // Else, it's a RawGroup.
+  const rawGroup = item as RawGroup;
+  const childItems = rawGroup.items.map((child) =>
+    transformToStarlight(child, rawGroup.subdir || parentSubdir),
+  );
   const cfg: any = {};
-  if (r.autogenerate) {
-    cfg.autogenerate = r.autogenerate;
-    if (r.collapsed) cfg.collapsed = true;
+  if (rawGroup.autogenerate) {
+    cfg.autogenerate = rawGroup.autogenerate;
+    if (rawGroup.collapsed) cfg.collapsed = true;
   } else {
     cfg.items = childItems;
-    if (r.collapsed) cfg.collapsed = true;
+    if (rawGroup.collapsed) cfg.collapsed = true;
   }
-
-  return group(r.key, cfg);
+  return makeGroup(rawGroup.key, cfg);
 }
+
+/**
+ * New toStarlight: transforms a top-level union (RawGroup | PageButton) to what Starlight needs.
+ */
+function toStarlightUnion(item: RawGroup | PageButton): any {
+  return transformToStarlight(item);
+}
+
+/** a) What Starlight needs */
+export const sidebar: StarlightUserConfig["sidebar"] =
+  raw.map(toStarlightUnion);
 
 /**
  * Update the IconGroup interface to allow PageButton objects.
@@ -316,35 +337,30 @@ export interface IconGroup {
 }
 
 /**
- * Recursively transform a RawGroup into what your Preact island needs.
- * For PageButton objects, return the full object (preserving label, slug, icon).
+ * Similarly, transform for your Preact island.
+ * For page buttons, return the object as is.
  */
-function toIconGroup(r: RawGroup): IconGroup {
+function transformToIconGroup(
+  item: string | RawGroup | PageButton,
+): IconGroup | PageButton | string {
+  if (typeof item === "string") {
+    return item.toLowerCase();
+  }
+  if ("slug" in item && typeof item.slug === "string") {
+    // Return the PageButton object to preserve label, icon, etc.
+    return item as PageButton;
+  }
+  const group = item as RawGroup;
   return {
-    label: r.label,
-    subdir: r.subdir,
-    icon: r.icon,
-    collapsed: r.collapsed,
-    autogenerate: r.autogenerate,
-    items: r.items.map((item) => {
-      if (typeof item === "string") {
-        return item.toLowerCase();
-      } else if (
-        typeof item === "object" &&
-        "slug" in item &&
-        typeof item.slug === "string"
-      ) {
-        // Instead of returning only the slug, return the object to preserve the label.
-        return item as PageButton;
-      } else {
-        return toIconGroup(item as RawGroup);
-      }
-    }),
+    label: group.label,
+    subdir: group.subdir,
+    icon: group.icon,
+    collapsed: group.collapsed,
+    autogenerate: group.autogenerate,
+    items: group.items.map((child) => transformToIconGroup(child)),
   };
 }
 
-/** a) What Starlight needs (icons are attached non‑enumerably) */
-export const sidebar: StarlightUserConfig["sidebar"] = raw.map(toStarlight);
-
-/** b) What your Preact island needs (full icons + labels + nesting) */
-export const sidebarWithIcons: IconGroup[] = raw.map(toIconGroup);
+/** b) What your Preact island needs */
+export const sidebarWithIcons: (IconGroup | PageButton | string)[] =
+  raw.map(transformToIconGroup);

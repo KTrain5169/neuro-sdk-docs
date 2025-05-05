@@ -14,7 +14,6 @@ export interface SidebarProps {
 // Union type for sidebar items: classic string, PageButton, or nested IconGroup
 export type SidebarItem = string | PageButton | IconGroup;
 
-// Type guard to check if an item is a PageButton
 function isPageButton(item: SidebarItem): item is PageButton {
   return (
     typeof item === "object" &&
@@ -23,19 +22,16 @@ function isPageButton(item: SidebarItem): item is PageButton {
   );
 }
 
-// Type guard to check if an item is an IconGroup (nested group)
 function isIconGroup(item: SidebarItem): item is IconGroup {
-  return typeof item === "object" && Array.isArray((item as any).items);
+  return typeof item === "object" && (item as IconGroup).items !== undefined;
 }
 
 function normalizePath(path: string): string {
-  // Remove trailing slash if present (except if the path is just "/")
   return path !== "/" && path.endsWith("/") ? path.slice(0, -1) : path;
 }
 
 /**
- * Render either a link (PageButton or auto-generated from string) or a nested dropdown (IconGroup).
- * Now accepts the currentPath to add an "active" class if a link matches.
+ * Render a list of items (for dropdowns, etc.)
  */
 function renderItems(
   items: SidebarItem[],
@@ -43,10 +39,9 @@ function renderItems(
   depth = 0,
   currentPath: string,
 ): preact.JSX.Element[] {
-  // Normalize currentPath once
   const normCurrent = normalizePath(currentPath);
   return items
-    .map((item) => {
+    .map((item: SidebarItem) => {
       if (typeof item === "string") {
         const slug = item.toLowerCase();
         const rawLabel = item.split("/").pop() || item;
@@ -88,9 +83,8 @@ function renderItems(
             currentPath={normCurrent}
           />
         );
-      } else {
-        return null;
       }
+      return null;
     })
     .filter((elem): elem is preact.JSX.Element => elem !== null);
 }
@@ -110,9 +104,7 @@ function DropdownGroup({
 }: DropdownGroupProps) {
   const [open, setOpen] = useState(true);
   const Icon = item.icon;
-  // Use the nested group's subdir if provided; otherwise, inherit the parent's prefix.
   const newPrefix = item.subdir ? item.subdir.toLowerCase() : prefix;
-
   return (
     <div className={`sidebar-group ${depth > 0 ? "dropdown" : ""}`}>
       <div className="sidebar-group-header" onClick={() => setOpen(!open)}>
@@ -135,95 +127,121 @@ function DropdownGroup({
 }
 
 export default function SidebarComponent(props: SidebarProps) {
-  const config = sidebarWithIcons;
+  // Now we treat sidebarWithIcons as an array of SidebarItem (which may be groups or page buttons)
+  const config: SidebarItem[] = sidebarWithIcons;
   const [mounted, setMounted] = useState(false);
-  const [activeGroup, setActiveGroup] = useState(config[0].label);
-  // Initialize currentPath safely (empty string on the server)
+  // For activeGroup, only groups have a label so we filter the groups.
+  const groups = config.filter(isIconGroup) as IconGroup[];
+  const [activeGroup, setActiveGroup] = useState(groups[0]?.label || "");
   const [currentPath, setCurrentPath] = useState("");
 
+  // Run only once on mount: set current path and determine active group from URL.
   useEffect(() => {
     setMounted(true);
-    // Now on the client it's safe to set the current path
-    setCurrentPath(window.location.pathname);
+    const path = window.location.pathname;
+    setCurrentPath(path);
+
+    // 🚩 NEW: if this path matches a PageButton, clear activeGroup and stop
+    // 🚩 NEW: if this path matches a PageButton, clear activeGroup and stop
+    const pageBtn = config.find(
+      (entry) =>
+        isPageButton(entry) &&
+        (path === `/${entry.slug}` || path.startsWith(`/${entry.slug}/`)),
+    );
+
+    if (pageBtn) {
+      setActiveGroup("");
+      return;
+    }
+
+    // existing group-match logic
+    const match = groups.find((g: IconGroup) => {
+      const groupPrefix = g.subdir ? `${g.subdir.toLowerCase()}/` : "";
+      return g.items.some((item: SidebarItem) => {
+        let slugStr: string;
+
+        if (typeof item === "string") {
+          slugStr = item.toLowerCase();
+        } else if (isPageButton(item)) {
+          slugStr = item.slug.toLowerCase();
+        } else {
+          // neither a plain string nor a PageButton → skip
+          return false;
+        }
+
+        const full = `/${groupPrefix}${slugStr}`;
+        return path === full || path.startsWith(full);
+      });
+    });
+
+    setActiveGroup(match ? match.label : groups[0]?.label || "");
   }, []);
 
-  useEffect(() => {
-    const onLocationChange = () => {
-      const path = window.location.pathname;
-      console.log("location path:", path);
-      setCurrentPath(path);
-      const match = config.find((g) => {
-        const groupPrefix = g.subdir ? `${g.subdir.toLowerCase()}/` : "";
-        let found = g.items.some((item) => {
-          if (typeof item === "string") {
-            const slug = item.toLowerCase();
-            const full = `/${groupPrefix}${slug}`;
-            console.log("comparing", full);
-            return path === full || path.startsWith(full);
-          } else if (isPageButton(item)) {
-            const slug = item.slug.toLowerCase();
-            const full = `/${groupPrefix}${slug}`;
-            console.log("comparing", full);
-            return path === full || path.startsWith(full);
-          } else if (isIconGroup(item)) {
-            return (item.items as SidebarItem[]).some((i) => {
-              if (typeof i === "string") {
-                const slug = i.toLowerCase();
-                const full = `/${groupPrefix}${slug}`;
-                console.log("nested comparing", full);
-                return path === full || path.startsWith(full);
-              } else if (isPageButton(i)) {
-                const slug = i.slug.toLowerCase();
-                const full = `/${groupPrefix}${slug}`;
-                console.log("nested comparing", full);
-                return path === full || path.startsWith(full);
-              }
-              return false;
-            });
-          }
-          return false;
-        });
-        console.log("match for group", g.label, "is", found);
-        return found;
-      });
-      console.log("matched group:", match ? match.label : "none");
-      setActiveGroup(match ? match.label : config[0].label);
-    };
-    onLocationChange();
-    window.addEventListener("popstate", onLocationChange);
-    return () => window.removeEventListener("popstate", onLocationChange);
-  }, [config]);
-
-  const activeGroupData =
-    config.find((g) => g.label === activeGroup) || config[0];
-  const prefix = activeGroupData.subdir
-    ? activeGroupData.subdir.toLowerCase()
-    : "";
-
+  // Render top-level buttons: if an item is a group, clicking it sets activeGroup manually.
   return (
     <div className="sidebar" {...props}>
       <div className="sidebar-buttons">
-        {config.map((g) => {
-          const Icon = g.icon;
-          return (
-            <button
-              key={g.label}
-              className={`sidebar-button${g.label === activeGroup ? " active" : ""}`}
-              onClick={() => setActiveGroup(g.label)}
-            >
-              {mounted && Icon ? <Icon className="sidebar-icon group" /> : ""}
-              {g.label}
-            </button>
-          );
+        {config.map((item) => {
+          if (isIconGroup(item)) {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.label}
+                className={`sidebar-button${item.label === activeGroup ? " active" : ""}`}
+                onClick={() => setActiveGroup(item.label)}
+              >
+                {mounted && Icon ? <Icon className="sidebar-icon group" /> : ""}
+                {item.label}
+              </button>
+            );
+          } else if (isPageButton(item)) {
+            const slug = item.slug.toLowerCase();
+            const href = normalizePath(`/${item.slug}`);
+            const isActive =
+              currentPath === href || currentPath.startsWith(href + "/");
+            return (
+              <a
+                key={item.key}
+                href={href}
+                className={`sidebar-button standalone${isActive ? " active" : ""}`}
+              >
+                {item.icon && <item.icon className="sidebar-icon page" />}
+                {item.label}
+              </a>
+            );
+          } else if (typeof item === "string") {
+            const slug = item.toLowerCase();
+            const label = item.split("/").pop() || item;
+            const href = normalizePath(`/${slug}`);
+            const isActive =
+              currentPath === href || currentPath.startsWith(href + "/");
+            return (
+              <a
+                key={item}
+                href={href}
+                className={`sidebar-button${isActive ? " active" : ""}`}
+              >
+                {label.charAt(0).toUpperCase() + label.slice(1)}
+              </a>
+            );
+          }
+          return null;
         })}
       </div>
       <div className="sidebar-dropdown">
-        {renderItems(
-          activeGroupData.items as SidebarItem[],
-          prefix,
-          0,
-          currentPath,
-        )}
+        {groups.find((g) => g.label === activeGroup)
+          ? renderItems(
+              groups.find((g) => g.label === activeGroup)!
+                .items as SidebarItem[],
+              groups.find((g) => g.label === activeGroup)!.subdir
+                ? groups
+                    .find((g) => g.label === activeGroup)!
+                    .subdir!.toLowerCase()
+                : "",
+              0,
+              currentPath,
+            )
+          : null}
       </div>
     </div>
   );

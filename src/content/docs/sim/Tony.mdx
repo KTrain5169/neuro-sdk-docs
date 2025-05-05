@@ -1,3 +1,96 @@
 ---
 title: Tony
 ---
+
+import { Code, Tabs, TabItem } from "@astrojs/starlight/components";
+
+Tony is a Neuro simulator written in Python. It allows users to simulate Neuro-sama using its GUI, relying (almost) entirely on a human operator.
+
+Tony is maintained by Pasu4, and can be found [here](https://github.com/Pasu4/neuro-api-tony).
+
+## Setup
+
+> [Note]
+> This part assumes you already have a Python version 3.10 or higher.
+> Python 3.9 or lower will not work due to breaking changes.
+>
+> If you don't have Python version 3.10 or higher, [download the official distribution here](https://python.org/download).
+
+To setup Tony, clone the repository above:
+
+<Code code="git clone https://github.com/Pasu4/neuro-api-tony" lang="sh" />
+
+Then, install dependencies. For the purposes of using, you have as many package managers as there are that support a `pyproject.toml` file.
+For this page, we will list only 2.
+
+<Tabs syncKey="py-package-manager">
+  <TabItem label="uv (recommended)">
+    <Code code="uv sync" lang="sh" />
+  </TabItem>
+  <TabItem label="pip">
+    <Code code="pip install" lang="sh" />
+  </TabItem>
+</Tabs>
+
+Finally, run the program:
+
+<Tabs syncKey="py-package-manager">
+  <TabItem label="uv (recommended)">
+    <Code code="uv run neuro-api-tony" lang="sh" />
+  </TabItem>
+  <TabItem label="pip">
+    <Code code="python3 src/neuro_api_tony/cli.py" lang="sh" />
+  </TabItem>
+</Tabs>
+
+If you prefer not to do all that, Tony is also available [as a package on PyPI](https://pypi.org/), with the update checker based on the latest version published to PyPI.
+
+## Configuration
+
+### Before startup
+
+Before startup you can configure Tony using these CLI flags:
+
+- (`-a` | `--addr` | `--address`) \<address> - The address the WebSocket server is on. By default it's `localhost` which prevents it from being exposed to the network.
+- (`-l` | `--log` | `--log-level`) \<level> - The level of logs you can see. Accepted values: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`. See [Startup](#Startup) for which level corresponds to what meaning.
+- (`-p` | `--port`) \<port> - The port to start Tony on. By default it starts at port 8000, matching other simulators.
+
+Other CLI flags:
+
+- (`-h` | `--help`) - Pops up the help menu.
+- (`-v`| `--version`) - Pops up the current version of Tony.
+
+### After startup
+
+After the GUI pops up, there is a small panel at the bottom right that allows you to configure Tony post-start.
+
+## Startup
+
+When starting up Tony, you'll see a window containg the (currently blank) list of actions to the left, a small log panel to the top-right giving you the ability to see messages sent back and forth.
+
+The log panel gives you the ability to select what mode you want to see them as ["System", "Commands", "Context", "Raw"].
+Pulling directly from Tony's README:
+
+- The **system tab** logs miscellaneous messages with color-coded tags:
+  - **Debug (gray):** Things that usually should be handled internally by an SDK (e.g. action IDs), as well as some internals of the application. Debug messages alone are not a cause for concern.
+  - **Info (blue):** Things that will likely not cause problems with Neuro, but might point to some other issue (e.g. `action/result` with no message).
+  - **Warning (yellow):** Things that do not comply with the API specification, but which Tony can still tolerate (e.g. trying to register actions before sending `startup`). These will likely cause problems with Neuro.
+  - **Error (red):** Things that make it impossible to process a command (e.g. receiving invalid JSON). These will definitely cause problems with Neuro.
+  - **Critical (dark red):** Something went wrong and Tony will likely have to be restarted.
+- The **commands** tab logs incoming and outgoing commands in a more condensed format than the raw tab.
+- The **context tab** shows everything that Neuro would get to read directly, which is the content of `context` commands, the description of actions, the state and query of `actions/force` commands, and the message of `action/result` commands. Silent contexts are displayed in gray and ephemeral contexts in light blue. It has the following tags:
+  - **Context:** Message is from a `context` command.
+  - **Silent:** Message is from a silent `context` command.
+  - **State:** Message is the state of an `actions/force` command.
+  - **Query:** Message is the query of an `actions/force` command.
+  - **Ephemeral:** Message is the query or state of an `actions/force` command with ephemeral context.
+  - **Action:** Message is the description of an action, logged at registration.
+  - **Result:** Message is from an `action/result` command. The color denotes whether the result indicates success (green) or failure (red).
+- The **raw tab** shows the full data sent over the websocket, as well as who sent that data. If it is valid JSON, it will be formatted for easier viewing.
+
+> Credits: Pasu4 (neuro-api-tony).
+>
+> Extracted text can be found [here](https://github.com/Pasu4/neuro-api-tony/blob/main/README.md#Logs).
+
+Actions that are registered to Tony are displayed on the left-hand side. You can select one and then click `Execute` to execute it, or click the `Delete`/`Delete all` buttons to unregister the action(s).
+If you're waiting for an action result, you can click `Stop waiting` to release the action lock and allow you to execute another command immediately. Note that this is not something Neuro normally does, as is manually unregistering actions.

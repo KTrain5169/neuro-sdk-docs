@@ -29,11 +29,16 @@
 
 .sidebar-button:hover:not(.active) {
   background-color: #f5f5f5;
-  color: #333
+  color: #333;
 }
 
 .sidebar-button.active {
-  background-color: #00aa93; /* Starlight-inspired blue */
+  background-color: #00aa93;
+  border-color: #0055aa;
+}
+
+.sidebar-button.standalone.active {
+  background-color: #2092b4;
   border-color: #0055aa;
 }
 
@@ -61,7 +66,7 @@
 }
 
 .sidebar-item.active {
-  background-color: #2092b4; /* Starlight-inspired blue */
+  background-color: #2092b4;
   border-color: #0055aa;
 }
 
