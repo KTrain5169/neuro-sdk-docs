@@ -15,12 +15,12 @@ export default defineConfig({
       title: "Unofficial Neuro Game SDK docs",
       head: [
         {
-            tag: 'link',
-            attrs: {
-                rel: 'icon',
-                href: '/neuro-sdk-icon.png'
-            }
-        }
+          tag: "link",
+          attrs: {
+            rel: "icon",
+            href: "/neuro-sdk-icon.png",
+          },
+        },
       ],
       social: [
         {

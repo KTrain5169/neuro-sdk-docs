@@ -148,3 +148,7 @@
 .sidebar-icon.category {
   transform: translateY(-2px);
 }
+
+.sidebar-icon.standalone-page {
+  transform: translateY(-1px)
+}

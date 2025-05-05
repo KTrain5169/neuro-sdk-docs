@@ -181,7 +181,7 @@ export default function SidebarComponent(props: SidebarProps) {
   return (
     <div className="sidebar" {...props}>
       <div className="sidebar-buttons">
-        {config.map((item) => {
+        {config.map((item: SidebarItem) => {
           if (isIconGroup(item)) {
             const Icon = item.icon;
             return (
@@ -205,7 +205,7 @@ export default function SidebarComponent(props: SidebarProps) {
                 href={href}
                 className={`sidebar-button standalone${isActive ? " active" : ""}`}
               >
-                {item.icon && <item.icon className="sidebar-icon page" />}
+                {item.icon && <item.icon className="sidebar-icon standalone-page" />}
                 {item.label}
               </a>
             );
