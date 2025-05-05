@@ -10,6 +10,40 @@ You can also tell Randy to do an action by itself using a POST request to its HT
 
 Randy is maintained by Alex, and can be found [here](https://github.com/VedalAI/neuro-game-sdk/tree/main/Randy).
 
+## Setup
+
+To set up Randy, begin by cloning the Neuro Game SDK repo:
+<Code code="git clone https://github.com/VedalAI/neuro-game-sdk" lang="sh" />
+
+Then, navigate into the `Randy` subdirectory:
+<Code code="cd Randy" lang="sh" />
+
+Afterwards, install dependencies using your package manager:
+<Tabs syncKey="package-manager">
+  <TabItem label="npm">
+    <Code code="npm install" lang="sh" />
+  </TabItem>
+  <TabItem label="yarn">
+    <Code code="yarn install" lang="sh" />
+  </TabItem>
+  <TabItem label="pnpm">
+    <Code code="pnpm install" lang="sh" />
+  </TabItem>
+</Tabs>
+
+Once dependencies are installed, start Randy using:
+<Tabs syncKey="package-manager">
+  <TabItem label="npm">
+    <Code code="npm run start" lang="sh" />
+  </TabItem>
+  <TabItem label="yarn">
+    <Code code="yarn run start" lang="sh" />
+  </TabItem>
+  <TabItem label="pnpm">
+    <Code code="pnpm run start" lang="sh" />
+  </TabItem>
+</Tabs>
+
 ## Startup
 
 On startup, Randy occupies ports 8080 (WebSocket) and 1337 (HTTP) and will begin listening for packets.
