@@ -38,3 +38,8 @@ Most languages already throw an error if they have to parse invalid JSON.
 You could try and catch this to send back an unsuccessful action result.
 
 </Aside>
+
+## More info about handling actions
+
+- You should be able to handle an action being sent the moment you unregister that action.
+- Neuro will be waiting for the action result before sending another action. For that reason, action results should be about validation, not actual results. [See more at the action result page](/base/actions/result)

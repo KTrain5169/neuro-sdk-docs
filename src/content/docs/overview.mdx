@@ -4,12 +4,19 @@ title: API Overview
 
 import { Aside } from "@astrojs/starlight/components";
 
+export const iconLocation =
+  "https://github.com/VedalAI/neuro-game-sdk/blob/main/Assets/icon.png";
+
 <img
   src="/neuro-sdk-icon.png"
   style="display: block; margin-left: auto; margin-right: auto;"
 />
 
-<p style="font-size: 15px; font-style: italic;">Official Neuro Game SDK icon. Source: <a href="https://github.com/VedalAI/neuro-game-sdk/blob/main/Assets/icon.png">VedalAI/neuro-game-sdk</a>. These docs are not official.</p>
+<div style="font-size: 15px; font-style: italic; text-align: center;">
+  Official Neuro Game SDK icon. Source:{" "}
+  <a href={iconLocation}>VedalAI/neuro-game-sdk</a>. These docs are not
+  official.
+</div>
 
 The Neuro Game API, despite its name, isn't an actual API; rather, it is a protocol on how to communicate game states, actions and more to the Neuro twins, to allow for fan-made games to be playable by her (a prominent example is some games made during the [Neuro-sama Game Jam 2](https://itch.io/jam/neuro) post-jam.)
 

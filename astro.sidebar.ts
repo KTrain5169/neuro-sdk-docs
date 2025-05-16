@@ -207,12 +207,6 @@ const raw: (RawGroup | PageButton)[] = [
         icon: FaBrain,
         slug: "gary",
       },
-      {
-        key: "vicky",
-        label: "Vicky",
-        icon: FaClipboardCheck,
-        slug: "vicky",
-      },
     ],
   },
   {
@@ -457,6 +451,6 @@ function transformToIconGroup(
   };
 }
 
-/** b) What your Preact island needs */
+/** b) What the Preact island needs */
 export const sidebarWithIcons: (IconGroup | PageButton | string)[] =
   raw.map(transformToIconGroup);

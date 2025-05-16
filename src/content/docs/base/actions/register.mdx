@@ -34,9 +34,15 @@ When registering actions to Neuro, send this packet:
 
 - `name` - The action name. This should be unique between every action you have in your game. It should be all lowercase with words separated by underscores (`_`).
 - `description` - A plaintext description of the action for Neuro to understand how to use it.
-- `schema` - A valid JSON schema for Neuro to fill out when she executes the action. If a schema is not needed, you can omit this field or set it to {}.
+- `schema` - A valid JSON schema for Neuro to fill out when she executes the action. If a schema is not needed, you can omit this field or set it to `{}`.
 
 <Aside type="caution">
+
+Most Neuro simulators require that `schema` is an object. It is unknown if non-object schemas (such as arrays, strings, numbers, etc...) is supported by Neuro.
+
+</Aside>
+
+<Aside type="danger">
 
 Do not use the following JSON schema keywords in your schema:{/* TODO: Why? */}
 
