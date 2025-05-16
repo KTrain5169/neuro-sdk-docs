@@ -54,4 +54,5 @@ After Neuro executes this action, you might then want to send the stuff as conte
 }
 ```
 
-This should theoretically allow Neuro to remember stuff with less reliance on her (admittedly sometimes goldfish) memory.
+This should theoretically allow Neuro to reason stuff with less reliance on her (admittedly sometimes goldfish) memory, similar to reasoning models.
+There isn't really necessarily a name or description you should use, the point of the action is to allow Neuro to write stuff *somewhere*.
