@@ -1,0 +1,40 @@
+---
+title: Handling actions from Neuro
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+Action commands from Neuro, whether forced or voluntary, have the following structure:
+
+```ts
+{
+    "command": "action",
+    "data": {
+        "id": string,
+        "name": string,
+        "data"?: string
+    }
+}
+```
+
+## `data` Parameters
+
+- `id` - a string that identifies this specific execution. You'll need to use this ID when returning an [action result](/base/actions/result).
+- `name` - the name of the action Neuro wants to execute.
+- `data` - If the action has a schema attached, this field contains the data to fulfill the schema.
+
+<Aside type="danger">
+
+The `data` for the action comes from Neuro herself. As such, **do not assume that it will always be correct!**
+It may not conform to the schema, or it may even be invalid JSON (potentially missing curly braces, for example).
+
+You need to be able to handle if the data doesn't conform to the schema, and send unsuccessful action results back to Neuro if she doesn't conform to your action's schema.
+
+</Aside>
+
+<Aside type="tip">
+
+Most languages already throw an error if they have to parse invalid JSON.
+You could try and catch this to send back an unsuccessful action result.
+
+</Aside>

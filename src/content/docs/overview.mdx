@@ -1,0 +1,57 @@
+---
+title: API Overview
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+<img
+  src="/neuro-sdk-icon.png"
+  style="display: block; margin-left: auto; margin-right: auto;"
+/>
+
+The Neuro Game API, despite its name, isn't an actual API; rather, it is a protocol on how to communicate game states, actions and more to the Neuro twins, to allow for fan-made games to be playable by her (a prominent example is some games made during the [Neuro-sama Game Jam 2](https://itch.io/jam/neuro) post-jam.)
+
+<Aside>
+
+For simplicity, in the rest of the docs, both Neuro-sama and Evil Neuro will be referred to by their common name, Neuro.
+This does not mean that Evil Neuro can't also play in place of Neuro-sama, since she uses the same specs and protocols.
+
+</Aside>
+
+Neuro herself doesn't directly interact with the game, instead, a WebSocket server acts as middleware/a relay between Neuro and the game, allowing commands to be sent back and forth via the server. Despite this, however, there are some limitations:
+
+- Neuro cannot understand messages in binary format. This limitation is not present in Randy and may not be present in other Neuro simulators.
+- Only one game can connect at a time (based off of action packets; some Neuro simulators do support multiple connections.)
+- The API is optimized for turn-based games. It is not recommended to try this API with real-time games.
+- You need to be able to describe the entire game state in text to Neuro. You shouldn't rely on Neuro's vision module being on while playing your game.
+
+<Aside type="tip">
+
+Here are examples of games that could work with the API:
+
+- Inscryption
+- Liar's Bar
+- Buckshot Roulette
+- Keep Talking and Nobody Explodes
+- Uno
+- Monopoly
+- Turn-based games in general
+
+And here are examples of games that won't work with the API:
+
+- Among Us (Vedal plans on using [a custom mod](https://github.com/VedalAI/neuro-amongus) for Neuro)
+- Skyrim
+- League of Legends
+- Celeste
+- Minecraft (again, custom mod)
+- Euro Truck Simulator
+- Counter Strike: Global Offensive
+- Any game with a moderate amount of real-time elements
+
+</Aside>
+
+- Quoting Alex himself, "Vedal said you can use this for more complex games but he told me "you wouldn't get it" so I'm not even going to try to imagine how this would even work, and I am just going to assume that he is wrong."
+
+## Credits
+
+- alexvoid (`VedalAI/neuro-game-sdk`), quoted text can be found [here](https://github.com/VedalAI/neuro-game-sdk/blob/main/README.md#Information) (expand the Examples dropdown).

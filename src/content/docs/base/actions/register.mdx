@@ -1,0 +1,88 @@
+---
+title: Register actions to let Neuro use them
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+For Neuro to be able to interact with the game, you need to register actions to Neuro.
+
+When registering actions to Neuro, send this packet:
+
+```ts
+{
+    "command": "actions/register",
+    "game": string,
+    "data": {
+        "actions": [
+            {
+                "name": string,
+                "description": string,
+                "schema": {
+                    [key: string]: any
+                }
+            } // Add more as necessary
+        ]
+    }
+}
+```
+
+## `data` Parameters
+
+- `actions` - An array of actions that Neuro can use after receiving the packet. See the section below.
+
+### `actions` Array Object Parameters
+
+- `name` - The action name. This should be unique between every action you have in your game. It should be all lowercase with words separated by underscores (`_`).
+- `description` - A plaintext description of the action for Neuro to understand how to use it.
+- `schema` - A valid JSON schema for Neuro to fill out when she executes the action. If a schema is not needed, you can omit this field or set it to {}.
+
+<Aside type="caution">
+
+Do not use the following JSON schema keywords in your schema:{/* TODO: Why? */}
+
+- `$anchor`
+- `$comment`
+- `$defs`
+- `$dynamicAnchor`
+- `$dynamicRef`
+- `$id`
+- `$ref`
+- `$schema`
+- `$vocabulary`
+- `additionalProperties`
+- `allOf`
+- `anyOf`
+- `contentEncoding`
+- `contentMediaType`
+- `contentSchema`
+- `dependentRequired`
+- `dependentSchemas`
+- `deprecated`
+- `description`
+- `else`
+- `if`
+- `maxProperties`
+- `minProperties`
+- `not`
+- `oneOf`
+- `patternProperties`
+- `readOnly`
+- `then`
+- `title`
+- `unevaluatedItems`
+- `unevaluatedProperties`
+- `writeOnly`
+
+</Aside>
+
+<Aside>
+
+Attempting to register an action that is already registered will be ignored by Neuro.
+
+If you want to change an action's description or schema, first [unregister](/base/actions/unregister) the action, then register a new action.
+
+</Aside>
+
+## Techniques with this packet
+
+- [Disposable actions](/base/techniques/disposable_actions)

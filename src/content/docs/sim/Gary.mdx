@@ -1,3 +1,59 @@
 ---
 title: Gary
 ---
+
+import { Aside, Steps, Code } from "@astrojs/starlight/components";
+
+Gary (aka Gaming Gary™️) is a Neuro simulator written in Python. Gary allows you to use models downloaded onto your computer for testing Neuro Game API integrations.
+
+Gary is maintained by Govorunb, and can be found [here](https://github.com/Govorunb/gary).
+
+<Aside type="caution">
+
+Gary, due to using local models, has varying performance depending on your computer's specs.
+While it has the potential to be better than Jippity if you have great specs, it can also be _worse than Randy_ if you have not as good specs.
+
+If your specs aren't normally good for running AI, you might want to use [Randy](/sim/randy), [Jippity](/sim/jippity), or [Tony](/sim/tony).
+
+</Aside>
+
+## Setup
+
+<Aside>
+
+This part assumes you have a standalone JavaScript runtime engine.
+
+If you don't have a JavaScript runtime engine, [download Node.js here](https://nodejs.org/download).
+
+</Aside>
+
+<Steps>
+
+1. Clone Gary into a folder:
+
+   <Code code="git clone https://github.com/Govorunb/gary" lang="sh" />
+
+2. `cd` into it and sync the uv lockfile:
+   ```sh
+   cd gary
+   uv sync
+   ```
+3. Run the uv command:
+
+   ```sh
+   uv run gary
+   ```
+
+   <Aside type="caution">
+
+   Gary does not come with models by default. See [Configuration - Before startup](#Before%20startup) for potential areas to get models from.
+
+   </Aside>
+
+</Steps>
+
+## Configuration
+
+### Before startup
+
+Gary does not come with any models by default. As such, you'll need to download a model yourself to use.

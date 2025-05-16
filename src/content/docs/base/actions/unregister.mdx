@@ -1,0 +1,33 @@
+---
+title: Unregister actions to prevent Neuro from using them
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+If you don't want Neuro to be able to execute an action anymore, send this packet:
+
+```ts
+{
+    "command": "actions/unregister",
+    "game": string,
+    "data": {
+        "actions": string[]
+    }
+}
+```
+
+This will remove Neuro's access to the actions specified, preventing her from using it.
+
+## `data` Parameters
+
+- `actions` - An array of strings that each correspond to a currently registered action.
+
+<Aside>
+
+If you unregister an action that isn't registered, that action will be ignored.
+
+</Aside>
+
+## Techniques with this packet
+
+- [Disposable actions](/base/techniques/disposable_actions)

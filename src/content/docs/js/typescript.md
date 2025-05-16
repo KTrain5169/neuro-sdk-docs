@@ -15,8 +15,24 @@ The SDK has the following developer-facing types:
 
 ### Action packets
 
-The `actions/register` command packet to Neuro has the following types:
+When using `actions/register` the action details follow the below interface:
 
 ```ts
-interface;
+interface ActionDetails {
+  name: string;
+  description: string;
+  schema?: any;
+}
+```
+
+Which is then used in this packet:
+
+```ts
+interface ActionsRegister {
+  command: "actions/register";
+  game: string;
+  data: {
+    actions: ActionDetails[];
+  };
+}
 ```

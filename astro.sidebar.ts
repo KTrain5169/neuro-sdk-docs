@@ -30,10 +30,17 @@ import {
   FaDice,
   FaKeyboard,
   FaBrain,
-  FaHardHat,
   FaExclamationCircle,
   FaInfoCircle,
+  FaPowerOff,
+  FaList,
+  FaScrewdriver,
+  FaHands,
+  FaClipboardCheck,
 } from "react-icons/fa";
+import { FaBoxArchive, FaClockRotateLeft, FaRotateLeft } from "react-icons/fa6";
+import { FiCheckSquare } from "react-icons/fi";
+import { LuPower } from "react-icons/lu";
 
 /**
  * A “raw” group lets you nest either:
@@ -73,8 +80,14 @@ const raw: (RawGroup | PageButton)[] = [
     icon: FaWifi,
     items: [
       {
+        key: "startup",
+        label: "Startup",
+        icon: LuPower,
+        slug: "startup",
+      },
+      {
         key: "actions",
-        subdir: "base/actions",
+        subdir: "actions",
         label: "Actions",
         icon: FaHandPointLeft,
         items: [
@@ -91,6 +104,18 @@ const raw: (RawGroup | PageButton)[] = [
             slug: "unregister",
           },
           {
+            key: "handling",
+            label: "Handling actions",
+            icon: FaHands,
+            slug: "handle",
+          },
+          {
+            key: "result",
+            label: "Results",
+            icon: FiCheckSquare,
+            slug: "result",
+          },
+          {
             key: "force",
             label: "Force",
             icon: FaExclamationCircle,
@@ -105,11 +130,50 @@ const raw: (RawGroup | PageButton)[] = [
         slug: "context",
       },
       {
+        key: "techniques",
+        subdir: "techniques",
+        label: "Techniques",
+        icon: FaScrewdriver,
+        items: [
+          {
+            key: "async_action_results",
+            label: "Asynchronous results",
+            icon: FaClockRotateLeft,
+            slug: "async_action_results",
+          },
+          {
+            key: "disposables",
+            label: "Disposable actions",
+            icon: FaBoxArchive,
+            slug: "disposable_actions",
+          },
+        ],
+      },
+      {
         key: "proposals",
         subdir: "proposals",
         label: "API Proposals",
         icon: FaQuestionCircle,
-        items: [],
+        items: [
+          {
+            key: "list-of-proposals",
+            label: "Full list",
+            icon: FaList,
+            slug: "",
+          },
+          {
+            key: "shutdown",
+            label: "Shutdowns by Neuro",
+            icon: FaPowerOff,
+            slug: "shutdown",
+          },
+          {
+            key: "reregister",
+            label: "Re-register commands",
+            icon: FaRotateLeft,
+            slug: "reregister",
+          },
+        ],
       },
     ],
   },
@@ -142,6 +206,12 @@ const raw: (RawGroup | PageButton)[] = [
         label: "Gary",
         icon: FaBrain,
         slug: "gary",
+      },
+      {
+        key: "vicky",
+        label: "Vicky",
+        icon: FaClipboardCheck,
+        slug: "vicky",
       },
     ],
   },
@@ -288,20 +358,45 @@ function transformToStarlight(
   item: string | RawGroup | PageButton,
   parentSubdir?: string,
 ): any {
+  // Helper to normalize & strip slashes
+  const normalize = (path: string) => path.replace(/\/+$/, "");
+
   if (typeof item === "string") {
     const slug = item.toLowerCase();
-    // Use parent's subdir if it exists.
-    return parentSubdir ? `${parentSubdir.toLowerCase()}/${slug}` : slug;
+    const path = parentSubdir ? `${parentSubdir.toLowerCase()}/${slug}` : slug;
+    return normalize(path);
   }
+
+  // PageButton (has a slug)
   if ("slug" in item && typeof item.slug === "string") {
-    const slug = item.slug.toLowerCase();
-    return parentSubdir ? `${parentSubdir.toLowerCase()}/${slug}` : slug;
+    const raw = item.slug.toLowerCase();
+
+    let path: string;
+    if (raw === "" && parentSubdir) {
+      // empty slug → map to exactly the parent directory
+      path = parentSubdir.toLowerCase();
+    } else {
+      path = parentSubdir ? `${parentSubdir.toLowerCase()}/${raw}` : raw;
+    }
+
+    return normalize(path);
   }
-  // Else, it's a RawGroup.
+
+  // Otherwise, it's a nested RawGroup
   const rawGroup = item as RawGroup;
+
+  // Build the combined subdir (e.g. "base/actions", not dropping "base")
+  const combinedSubdir = rawGroup.subdir
+    ? parentSubdir
+      ? `${parentSubdir.toLowerCase()}/${rawGroup.subdir.toLowerCase()}`
+      : rawGroup.subdir.toLowerCase()
+    : parentSubdir?.toLowerCase();
+
+  // Recurse into children
   const childItems = rawGroup.items.map((child) =>
-    transformToStarlight(child, rawGroup.subdir || parentSubdir),
+    transformToStarlight(child, combinedSubdir),
   );
+
   const cfg: any = {};
   if (rawGroup.autogenerate) {
     cfg.autogenerate = rawGroup.autogenerate;
@@ -310,6 +405,7 @@ function transformToStarlight(
     cfg.items = childItems;
     if (rawGroup.collapsed) cfg.collapsed = true;
   }
+
   return makeGroup(rawGroup.key, cfg);
 }
 
@@ -325,7 +421,7 @@ export const sidebar: StarlightUserConfig["sidebar"] =
   raw.map(toStarlightUnion);
 
 /**
- * Update the IconGroup interface to allow PageButton objects.
+ * IconGroup interface for the Sidebar Preact component
  */
 export interface IconGroup {
   label: string;

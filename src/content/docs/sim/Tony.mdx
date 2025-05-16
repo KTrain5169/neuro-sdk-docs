@@ -2,7 +2,13 @@
 title: Tony
 ---
 
-import { Code, Tabs, TabItem, Aside } from "@astrojs/starlight/components";
+import {
+  Code,
+  Tabs,
+  TabItem,
+  Aside,
+  Steps,
+} from "@astrojs/starlight/components";
 
 Tony is a Neuro simulator written in Python. It allows users to simulate Neuro-sama using its GUI, relying (almost) entirely on a human operator.
 
@@ -15,57 +21,55 @@ Tony is maintained by Pasu4, and can be found [here](https://github.com/Pasu4/ne
 This part assumes you already have a Python version 3.10 or higher.
 Python 3.9 or lower will not work due to breaking changes.
 
-If you don't have Python version 3.10 or higher, [download the official distribution here](https://python.org/download).
+If you don't have Python version 3.10 or higher, [download the official distribution here](https://python.org/download). Other distributions should work, but aren't guaranteed.
 
 </Aside>
 
-To setup Tony, clone the repository above:
+To setup Tony:
 
-<Code code="git clone https://github.com/Pasu4/neuro-api-tony" lang="sh" />
+<Steps>
 
-Then, install dependencies. For the purposes of using, you have as many package managers as there are that support a `pyproject.toml` file.
-For this page, we will list only 2.
+1.  Clone the repository above:
 
-<Tabs syncKey="py-package-manager">
-  <TabItem label="uv (recommended)">
-    <Code code="uv sync" lang="sh" />
-  </TabItem>
-  <TabItem label="pip">
-    <Code code="pip install" lang="sh" />
-  </TabItem>
-</Tabs>
+    <Code
+      code="git clone https://github.com/Pasu4/neuro-api-tony.git"
+      lang="sh"
+    />
 
-Finally, run the program:
+2.  Navigate into the directory:
 
-<Tabs syncKey="py-package-manager">
-  <TabItem label="uv (recommended)">
-    <Code code="uv run neuro-api-tony" lang="sh" />
-  </TabItem>
-  <TabItem label="pip">
-    <Code code="python3 src/neuro_api_tony/cli.py" lang="sh" />
-  </TabItem>
-</Tabs>
+    <Code code="cd neuro-api-tony" lang="sh" />
+
+3.  Install dependencies. For the purposes of using, you have as many package managers as there are that support a `pyproject.toml` file.
+    For this page, we will list only 2.
+
+        <Tabs syncKey="py-package-manager">
+          <TabItem label="uv (recommended)">
+            <Code code="uv sync" lang="sh" />
+          </TabItem>
+          <TabItem label="pip">
+            <Code code="pip install" lang="sh" />
+          </TabItem>
+        </Tabs>
+
+4.  Run the program:
+
+    <Tabs syncKey="py-package-manager">
+      <TabItem label="uv (recommended)">
+        <Code code="uv run neuro-api-tony" lang="sh" />
+      </TabItem>
+      <TabItem label="pip">
+        <Code code="neuro-api-tony" lang="sh" />
+      </TabItem>
+    </Tabs>
+
+</Steps>
+
+<Aside>
 
 If you prefer not to do all that, Tony is also available [as a package on PyPI](https://pypi.org/), with the update checker based on the latest version published to PyPI.
 
-## Configuration
-
-### Before startup
-
-Before startup you can configure Tony using these CLI flags:
-
-- (`-a` | `--addr` | `--address`) \<address> - The address the WebSocket server is on. By default it's `localhost` which prevents it from being exposed to the network.
-- (`-l` | `--log` | `--log-level`) \<level> - The level of logs you can see. Accepted values: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`. See [Startup](#Startup) for which level corresponds to what meaning.
-- (`-p` | `--port`) \<port> - The port to start Tony on. By default it starts at port 8000, matching other simulators.
-
-Other CLI flags:
-
-- (`-h` | `--help`) - Pops up the help menu.
-- (`-v`| `--version`) - Pops up the current version of Tony.
-
-### After startup
-
-After the GUI pops up, there is a small panel at the bottom right that allows you to configure Tony post-start.
+</Aside>
 
 ## Startup
 
@@ -91,9 +95,44 @@ Pulling directly from Tony's README:
   - **Result:** Message is from an `action/result` command. The color denotes whether the result indicates success (green) or failure (red).
 - The **raw tab** shows the full data sent over the websocket, as well as who sent that data. If it is valid JSON, it will be formatted for easier viewing.
 
-> Credits: Pasu4 (neuro-api-tony).
+> Credits: Pasu4/neuro-api-tony
 >
 > Extracted text can be found [here](https://github.com/Pasu4/neuro-api-tony/blob/main/README.md#Logs).
 
 Actions that are registered to Tony are displayed on the left-hand side. You can select one and then click `Execute` to execute it, or click the `Delete`/`Delete all` buttons to unregister the action(s).
 If you're waiting for an action result, you can click `Stop waiting` to release the action lock and allow you to execute another command immediately. Note that this is not something Neuro normally does, as is manually unregistering actions.
+
+A new window pops up whenever an `actions/force` packet is received. This window shows you what actions the packet specifies can be executed to proceed. If necessary, you can close that window and ignore the `actions/force` - however, be aware that you cannot bring that window back up again.
+
+## Configuration
+
+### Before startup
+
+Before startup you can configure Tony using these CLI flags:
+
+- (`-a` | `--addr` | `--address`) \<address> - The address the WebSocket server is on. By default it's `localhost` which prevents it from being exposed to the network.
+- (`-l` | `--log` | `--log-level`) \<level> - The level of logs you can see. Accepted values: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`. See [Startup](#Startup) for which level corresponds to what meaning.
+- (`-p` | `--port`) \<port> - The port to start Tony on. By default it starts at port 8000, matching other simulators.
+
+Other CLI flags:
+
+- (`-h` | `--help`) - Pops up the help menu.
+- (`-v`| `--version`) - Pops up the current version of Tony.
+
+### After startup
+
+After the GUI pops up, there is a small config panel at the bottom right that allows you to configure Tony post-start.
+The panel allows you to:
+
+- Ignore `actions/force` commands immediately.
+- Automatically answer `actions/force` commands with reasonably(ish) fake data generated (if necessary).
+- Log microseconds when packets are sent/received.
+- Add l\*tency before executing each command. Maximum value is 10000ms, and unfortunately, cannot be negative.
+- Change the level of logging displayed in the log panel.
+
+Additionally, the config panel allows you to send commands to the connected client that is currently under proposal. For more information, see the [Proposed APIs overview](/base/proposals).
+
+## Known issues
+
+- The last button on the control panel sometimes does not appear when the app is started, should be fixed by resizing the window.
+- Due to a bug in the JSF library, valid strings may not be generated if `minLength`/`maxLength` is specified with `pattern`.

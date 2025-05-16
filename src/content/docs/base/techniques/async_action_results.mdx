@@ -1,0 +1,41 @@
+---
+title: Asynchronous action results
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+Because [action results](/base/actions/result) packets are meant to be sent as soon as possible after validating incoming packets, we should use both action result packets and context packets to send validation and results separately.
+
+Asynchronous actions (such as querying a database) should first send a successful `action/result` packet back to tell Neuro that her packet data was correct:
+
+```json
+{
+  "command": "action/result",
+  "game": "game",
+  "data": {
+    "id": "action_id",
+    "success": true
+  }
+}
+```
+
+Then, when the asynchronous action is completed, send Neuro the results as a context:
+
+```json
+{
+  "command": "context",
+  "game": "game",
+  "data": {
+    "message": "Query results: (data)",
+    "silent": true
+  }
+}
+```
+
+This allows Neuro to perform any other action between validation and receiving results.
+
+<Aside>
+
+While this is essentially required for asynchronous actions, such as querying an API or another delayed action, it is often recommended to mostly or always use asynchronous action results in your game.
+
+</Aside>

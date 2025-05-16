@@ -1,0 +1,26 @@
+---
+title: Startup packet
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+Upon connection to Neuro, a startup packet must be sent: {/* What happens if this isn't sent? */}
+
+```ts
+{
+    "command": "startup",
+    "game": string
+}
+```
+
+## Parameters
+
+- `game` - Your game's name, as it's officially displayed and stylised. (examples: Liar's Bar, Minecraft, osu!, Slay the Spire, Buckshot Roulette, Pokémon Showdown!) {/* Is it safe to use characters with special symbols (e.g. umlauts, accents)? */}
+
+<Aside type="caution">
+
+Upon sending this packet, Neuro will automatically unregister all actions currently registered.
+
+You shouldn't send this packet more than once either, as it also does some behind-the-scenes setup.
+
+</Aside>

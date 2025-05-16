@@ -1,0 +1,70 @@
+---
+title: Shutdowns by Neuro
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+<Aside>
+
+This is planned to be a part of the Game Automation API, which should only be used by games Neuro can launch by herself.
+
+Therefore, this article should be irrelevant for most people.
+
+</Aside>
+
+As part of the Game Automation API, Neuro is planned to get access to a new shutdown command, which as the name suggests, allows her to shut a game down.
+
+<Aside type="caution">
+
+In both types of shutdowns, Neuro _can and will_ terminate the process herself to shut the game down, so don't close before that.
+
+</Aside>
+
+## Messages sent from Neuro
+
+There are 2 types of shutdowns: graceful and immediate.
+
+### Graceful shutdowns
+
+When Neuro wants to do a graceful shutdown, she sends this packet to the connected client:
+
+```ts
+{
+    "command": "shutdown/graceful",
+    "data": {
+        "wants_shutdown": boolean
+    }
+}
+```
+
+The `wants_shutdown` key indicates whether or not Neuro wants to shutdown or not.
+
+- `true` means the game should save and quit to main menu at the next graceful point.
+- `false` means that the game should cancel shutdown preparations, as Neuro no longer wants to shut the game down.
+
+When a `shutdown/graceful` command is sent from Neuro, it is recommended to save all the progress and return back to the main menu so that the files aren't being read while she shuts the game down.
+
+### Immediate shutdown
+
+When Neuro wants to do an immediate shutdown, she sends this packet to the connected client:
+
+```ts
+{
+    "command": "shutdown/immediate"
+}
+```
+
+When a `shutdown/immediate` command is sent from Neuro, death is imminent. Save as much progress as possible, since there is only a couple seconds before Neuro kills the game's process.
+
+## Messages sent to Neuro
+
+Upon saving (and returning to main menu if a graceful shutdown was received), games that support this API should send back this packet:
+
+```ts
+{
+    "command": "shutdown/ready",
+    "game": string
+}
+```
+
+This will tell Neuro that the game can be closed safely now. Neuro will _immediately_ (or as soon as possible) kill the game's process, so definitely ensure that progress has been saved before sending this packet.

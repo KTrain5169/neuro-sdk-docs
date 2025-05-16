@@ -1,0 +1,51 @@
+---
+title: Action results
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+After Neuro sends an action command, your game should return back the following packet to tell Neuro if the command succeeded:
+
+```ts
+{
+	"command": "action/result",
+	"game": string,
+	"data": {
+		"id": string,
+		"success": boolean,
+		"message"?: string
+	}
+}
+```
+
+<Aside type="caution">
+
+You shouldn't be sending multiple action results, you should only be sending one per action command.
+
+</Aside>
+
+<Aside type="tip">
+
+You should send back the result as soon as possible, to tell Neuro whether or not she entered the action details correctly.
+If you need to do an action that requires a bit of wait time, [use the asynchronous action result technique](/base/techniques/asynchronous_action_results).
+
+</Aside>
+
+## `data` Parameters
+
+- `id` - The ID of the action you are sending the result of. This should have been sent to you from Neuro when she executed an `action` command.
+- `success` - Whether or not the action succeeded.
+
+<Aside type="danger">
+
+If the action was part of an `actions/force` _and_ `success` is set to `false`, Neuro will **retry the whole action force**! That means that she may retry with completely different data or even with a different action!
+
+If the action failed but you don't want Neuro to retry the force, set `success` to `true` but provide an error message in the `message` field.
+
+</Aside>
+
+- `message` - A short, optional (required if `success` is `false`) string that gets received by Neuro.
+
+## Techniques using this packet
+
+- [Asynchronous action results](/base/techniques/async_action_results)

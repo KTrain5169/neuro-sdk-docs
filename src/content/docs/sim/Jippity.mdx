@@ -1,3 +1,135 @@
 ---
 title: Jippity
 ---
+
+import {
+  Aside,
+  Code,
+  Tabs,
+  TabItem,
+  Steps,
+} from "@astrojs/starlight/components";
+
+Jippity is a Neuro simulator that is like Randy, but aims to be smarter. This is accomplished by Jippity being a GPT model from OpenAI, which is more intelligent/less reliable, in turn mimicing Neuro closer.
+
+Jippity being offloaded to GPT models means that, unlike Randy, Jippity can:
+
+- choose to take actions without an action force (Randy can do this, but you have to specify that yourself, as well as the data to send, using a HTTP POST request)
+- choose to ignore action forces
+- send actions with invalid JSON data
+- think he's a streamer (and is lonely because he doesn't have any viewers{/* omegalul */})
+
+Other implementation details are as follows:
+
+- There is no guarantee that `actions/force` packets will be answered in a timely manner.
+- Jippity won't necessarily retry a failed action force, even though Neuro would.
+- `ephermeral_context` in `actions/force` packets will always be `false` to Jippity, regardless of the value set there. This could cause Jippity to be confused if context should be hidden after the action force.
+
+Jippity is maintained by EnterpriseScratchDev, and can be found [here](https://github.com/EnterpriseScratchDev/neuro-api-jippity).
+
+## Jippity's prompt
+
+Jippity's default prompt is the following:
+
+```ts
+"You are Jippity, an artificial intelligence designed to play video games on a livestream.\n";
+"The messages you receive contain information about what's happening in the game.";
+"You will use function calls to perform game actions. ";
+"Do not attempt to make in-game actions in your text responses. ";
+"Remember that you are the one playing the game, not the audience.\n";
+"\n";
+"If you don't have any functions available or in-game actions you want to take, you can talk about your half-brother Randy and your cousin Neuro-sama.";
+"If you are feeling lonely because no one is talking in chat, you can make up stories about Randy and Neuro.";
+"Try to limit your monologues to a few sentences at a time.";
+```
+
+Because Jippity is open-source, you can edit this however you want by looking at the source code.
+
+## Setup
+
+<Aside>
+
+This part assumes you have a standalone JavaScript runtime engine.
+
+If you don't have a JavaScript runtime engine, [download Node.js here](https://nodejs.org/download).
+
+</Aside>
+
+To set up Jippity:
+
+<Steps>
+
+1. Clone the repository above.
+
+   <Code
+     code="git clone https://github.com/EnterpriseScratchDev/neuro-api-jippity.git"
+     lang="sh"
+   />
+
+2. Go into the `backend` directory.
+
+   <Code code="cd neuro-api-jippity/backend" lang="sh" />
+
+3. Install dependencies.
+
+   <Tabs syncKey="js-package-manager">
+     <TabItem label="npm">
+       <Code code="npm install" lang="sh" />
+     </TabItem>
+     <TabItem label="yarn">
+       <Code code="yarn install" lang="sh" />
+     </TabItem>
+     <TabItem label="pnpm">
+       <Code code="pnpm install" lang="sh" />
+     </TabItem>
+   </Tabs>
+
+   <Aside>
+
+   Before this next step, you'll need to set your OpenAI API key in a `.env` file.
+
+   If you don't have one, you can obtain one [here](https://platform.openai.com/settings/organization/billing/overview).
+
+   </Aside>
+
+4. Start Jippity.
+
+   <Tabs syncKey="js-package-manager">
+     <TabItem label="npm">
+       <Code code="npm run start" lang="sh" />
+     </TabItem>
+     <TabItem label="yarn">
+       <Code code="yarn run start" lang="sh" />
+     </TabItem>
+     <TabItem label="pnpm">
+       <Code code="pnpm run start" lang="sh" />
+     </TabItem>
+   </Tabs>
+
+</Steps>
+
+## Configuration
+
+Jippity is configured exclusively using environmental variables. The table of variables to configure Jippity is below:
+
+| Environment Variable  | Description                                                                                                                                     | Required | Example       |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------- |
+| `OPENAI_API_KEY`      | Your OpenAI API key.                                                                                                                            | Yes      | you wish      |
+| `OPENAI_MODEL`        | The OpenAI model to use. It must support tools (formerly functions).                                                                            | No       | `gpt-4o-mini` |
+| `WSS_PORT`            | The port the websocket server will listen on. Defaults to `8000`.                                                                               | No       | `8000`        |
+| `LOG_LEVEL`           | The level of logs to display. The options are `error`, `warn`, `info`, and `debug`.                                                             | No       | `info`        |
+| `JIPPITY_INTERVAL_MS` | The interval in milliseconds before Jippity will say/do something unprompted.<br/>Defaults to 10 seconds, has a hard-coded minimum of 1 second. | No       | `10000`       |
+
+> Credits: EnterpriseScratchDev/neuro-api-jippity (modified)
+>
+> The extracted text can be found [here](https://github.com/EnterpriseScratchDev/neuro-api-jippity/blob/main/README.md#Configuration%20Using%20Environmental%20Variables).
+
+## Startup
+
+On startup, Jippity won't be connected to OpenAI immediately. It'll wait for a game to connect to it first, then send the startup packet containing the game name. Jippity should respond with some comments about it.
+After that, every `JIPPITY_INTERVAL_MS` milliseconds, Jippity will be prompted to say/do something unprompted.
+Jippity will be notified immediately of an action force, as expected.
+
+## Known issues
+
+- Old messages are not cleared from the AI's memory, so it will eventually pile up contexts, leading to a crash (think memory leaks). Token limit is currently hardcoded to 2048.

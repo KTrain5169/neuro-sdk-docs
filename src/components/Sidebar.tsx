@@ -61,8 +61,14 @@ function renderItems(
       } else if (isPageButton(item)) {
         const slug = item.slug.toLowerCase();
         const href = normalizePath(`/${prefix}/${slug}`);
-        const isActive =
-          normCurrent === href || normCurrent.startsWith(href + "/");
+        let isActive: boolean;
+
+        if (slug === "") {
+          isActive = normCurrent === href || normCurrent === href + "/";
+        } else {
+          isActive = normCurrent === href || normCurrent.startsWith(href + "/");
+        }
+
         return (
           <a
             key={`pb-${depth}-${item.key}`}
@@ -101,10 +107,12 @@ function DropdownGroup({
   prefix,
   depth,
   currentPath,
-}: DropdownGroupProps) {
+}: DropdownGroupProps): preact.JSX.Element {
   const [open, setOpen] = useState(true);
   const Icon = item.icon;
-  const newPrefix = item.subdir ? item.subdir.toLowerCase() : prefix;
+  const newPrefix = item.subdir
+    ? `${prefix}/${item.subdir.toLowerCase()}`
+    : prefix;
   return (
     <div className={`sidebar-group ${depth > 0 ? "dropdown" : ""}`}>
       <div className="sidebar-group-header" onClick={() => setOpen(!open)}>
@@ -126,56 +134,35 @@ function DropdownGroup({
   );
 }
 
-export default function SidebarComponent(props: SidebarProps) {
+export default function SidebarComponent(
+  props: SidebarProps,
+): preact.JSX.Element {
   // Now we treat sidebarWithIcons as an array of SidebarItem (which may be groups or page buttons)
   const config: SidebarItem[] = sidebarWithIcons;
-  const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState<boolean>(false);
   // For activeGroup, only groups have a label so we filter the groups.
   const groups = config.filter(isIconGroup) as IconGroup[];
-  const [activeGroup, setActiveGroup] = useState(groups[0]?.label || "");
-  const [currentPath, setCurrentPath] = useState("");
+  const [activeGroup, setActiveGroup] = useState<string>("");
+  const [currentPath, setCurrentPath] = useState<string>("");
 
   // Run only once on mount: set current path and determine active group from URL.
   useEffect(() => {
+    // 1) Mark mounted and grab the path
     setMounted(true);
-    const path = window.location.pathname;
-    setCurrentPath(path);
+    const rawPath = window.location.pathname;
+    const path = rawPath.toLowerCase();
+    setCurrentPath(rawPath);
 
-    // 🚩 NEW: if this path matches a PageButton, clear activeGroup and stop
-    // 🚩 NEW: if this path matches a PageButton, clear activeGroup and stop
-    const pageBtn = config.find(
-      (entry) =>
-        isPageButton(entry) &&
-        (path === `/${entry.slug}` || path.startsWith(`/${entry.slug}/`)),
-    );
-
-    if (pageBtn) {
-      setActiveGroup("");
-      return;
-    }
-
-    // existing group-match logic
-    const match = groups.find((g: IconGroup) => {
-      const groupPrefix = g.subdir ? `${g.subdir.toLowerCase()}/` : "";
-      return g.items.some((item: SidebarItem) => {
-        let slugStr: string;
-
-        if (typeof item === "string") {
-          slugStr = item.toLowerCase();
-        } else if (isPageButton(item)) {
-          slugStr = item.slug.toLowerCase();
-        } else {
-          // neither a plain string nor a PageButton → skip
-          return false;
-        }
-
-        const full = `/${groupPrefix}${slugStr}`;
-        return path === full || path.startsWith(full);
-      });
+    // 2) Find the group whose `subdir` matches the first segment
+    const match = groups.find((g) => {
+      if (!g.subdir) return false;
+      const seg = g.subdir.toLowerCase();
+      return path === `/${seg}` || path.startsWith(`/${seg}/`);
     });
 
-    setActiveGroup(match ? match.label : groups[0]?.label || "");
-  }, []);
+    // 3) If found, highlight it; otherwise none
+    setActiveGroup(match ? match.label : "");
+  }, []); // ← run only once, on mount
 
   // Render top-level buttons: if an item is a group, clicking it sets activeGroup manually.
   return (
@@ -205,7 +192,9 @@ export default function SidebarComponent(props: SidebarProps) {
                 href={href}
                 className={`sidebar-button standalone${isActive ? " active" : ""}`}
               >
-                {item.icon && <item.icon className="sidebar-icon standalone-page" />}
+                {item.icon && (
+                  <item.icon className="sidebar-icon standalone-page" />
+                )}
                 {item.label}
               </a>
             );

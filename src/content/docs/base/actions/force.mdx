@@ -1,0 +1,50 @@
+---
+title: Force an action from Neuro
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+In certain circumstances, it may be urgent or necessary for Neuro to immediately execute an action. A common example is when it's her turn in a turn-based game.
+In those circumstances, send the following packet:
+
+```ts
+{
+    "command": "actions/force",
+    "game": string,
+    "data": {
+        "state"?: string,
+        "query": string,
+        "ephermeral_context"?: boolean
+        "action_names": string[]
+    }
+}
+```
+
+Upon receipt of this packet, Neuro will send an action as soon as possible. Be ready!
+
+## `data` Parameters
+
+- `state` - An optional string that describes the current state of the game to Neuro. You can make this in plaintext, JSON, Markdown or any other arbitrary format.
+- `query` - A plaintext prompt that tells Neuro what she should do, for example, selecting an item or using a card.
+- `ephermeral_context`: Whether or not Neuro should keep this in her memory after the action force. Defaults to `false`.
+- `action_names`: An array of strings that correspond to the names of **already registered actions**. {/* What happens if an action listed in the array isn't registered? */}
+
+<Aside type="danger">
+
+Don't send Neuro multiple action forces, since this will cause problems!
+
+</Aside>
+
+{/* What happens if all action name strings aren't registered, both in immediate functionality and remembering state/query? */}
+
+## Special cases
+
+Due to how action forces work, you need to take into account the following:
+
+- The action force system, due to how it works, is inherently susceptible to race conditions. Be very careful with how action forces are handled, otherwise you may duplicate action messages/executions and/or enter a deadlocked state.
+- Neuro may try to use actions at any time after registration, theoretically including the moments right before, and at the moment your game sends an action force. Your game should be able to handle those conditions as well.
+- If you want to force an action that is usable outside of an action force, be aware that Neuro might decide to try the action immediately before/after an action force. Therefore you should either take that into account or use disposable actions (see below section).
+
+## Techniques using this packet
+
+- [Disposable actions](/base/techniques/disposable_actions)

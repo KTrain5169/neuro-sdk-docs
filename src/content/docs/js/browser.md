@@ -2,7 +2,7 @@
 title: Browser usage
 ---
 
-In addition to being available as an npm module, you can also get it by using `<script>` tags in your `<body>`.
+In addition to being available as a module published on the npm registry, you can also get it by using `<script>` tags in your `<body>`.
 
 Simply place this as a `<script>` tag somewhere in your body:
 
