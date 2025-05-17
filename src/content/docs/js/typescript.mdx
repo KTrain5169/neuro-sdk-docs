@@ -13,6 +13,23 @@ When using exported functions from the JavaScript/TypeScript SDK, compatible edi
 
 The SDK has the following developer-facing types:
 
+### NeuroClient
+
+The [`NeuroClient` class](/js/api/client) has a TypeScript declaration of the following:
+
+#### Properties
+
+- `ws?`: `string` - The WebSocket connection.
+- `game`: `string` - The game name.
+- `url`: `string` - The WebSocket server URL (should start with `ws://`)
+- `actionHandlers`: `((actionData: { id: string; name: string; params: any; }) => void)[]` - An array of action handlers.
+
+#### Methods
+
+- `constructor` - NeuroClient constructor. Params: `url: string, game: string, onConnected: () => void`
+- `sendContext`: `void` - Context send function. Params: `messageText: string, silent?: boolean`
+- `registerActions`: `void` - Registers an action for Neuro to use. Params: `actions: `[`ActionDetails`](#action-packets)`[]`
+
 ### Action packets
 
 When using `actions/register` the action details follow the below interface:

@@ -267,7 +267,7 @@ const raw: (RawGroup | PageButton)[] = [
         key: "javascript.overview",
         label: "Overview",
         items: [
-          "concepts/architecture",
+          "concepts/handler",
           "concepts/connection",
           "tutorial/getting_started",
         ],
