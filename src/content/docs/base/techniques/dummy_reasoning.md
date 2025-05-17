@@ -1,8 +1,8 @@
 ---
-title: Memory dummy actions
+title: Dummy reasoning actions
 ---
 
-Due to Neuro (at least, as observed) not using a reasoning model (l\*tency), she can have trouble remembering logical steps to something that is supposed to be in her memory. Memory dummy actions would allow her to write those down to the game and potentially able to remember and retrieve it later by herself.
+Due to Neuro (at least, as observed) not using a reasoning model (l\*tency), she can have trouble remembering logical steps to something that is supposed to be in her memory. Dummy reasoning actions would allow her to write those down to the game so that she can reason somewhere without .
 
 Take a game like 20 Questions. Neuro might forget her answer, and would therefore make up reasoning on the spot to justify her also newly made-up answer, which might be... less than sound logic.
 You might want to register a dummy action like this:
