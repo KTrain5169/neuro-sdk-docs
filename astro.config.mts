@@ -9,6 +9,8 @@ import preact from "@astrojs/preact";
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://ktrain5169.github.io/neuro-sdk-docs",
+  base: "/neuro-sdk-docs",
   integrations: [
     starlight({
       favicon: "/neuro-sdk-icon.png",
