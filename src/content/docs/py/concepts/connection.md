@@ -1,5 +1,5 @@
 ---
-title: Architecture
+title: Connection
 banner:
   content: |
     This site is under <b>heavy WIP</b>, and is currently closed-source.

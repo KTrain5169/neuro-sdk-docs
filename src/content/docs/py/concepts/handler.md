@@ -1,5 +1,5 @@
 ---
-title: Architecture
+title: Handler
 banner:
   content: |
     This site is under <b>heavy WIP</b>, and is currently closed-source.
