@@ -251,7 +251,7 @@ const raw: (RawGroup | PageButton)[] = [
         key: "python.overview",
         label: "Overview",
         items: [
-          "concepts/architecture",
+          "concepts/handler",
           "concepts/connection",
         ],
       },
