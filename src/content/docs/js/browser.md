@@ -4,7 +4,7 @@ banner:
   content: |
     This site is under <b>heavy WIP</b>.
     You've most likely been pointed to this site to point towards a concept, or something.
-    Either way, take at least some of the info on this page with a grain of salt.
+    Either way, take at least some of the info on this page with a grain of salt, and also don't expect much info since it's very incomplete on content.
 ---
 
 In addition to being available as a module published on the npm registry, you can also get it by using `<script>` tags in your `<body>`.

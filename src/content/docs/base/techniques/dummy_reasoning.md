@@ -4,7 +4,7 @@ banner:
   content: |
     This site is under <b>heavy WIP</b>.
     You've most likely been pointed to this site to point towards a concept, or something.
-    Either way, take at least some of the info on this page with a grain of salt.
+    Either way, take at least some of the info on this page with a grain of salt, and also don't expect much info since it's very incomplete on content.
 ---
 
 Due to Neuro (at least, as observed) not using a reasoning model (l\*tency), she can have trouble remembering logical steps to something that is supposed to be in her memory. Dummy reasoning actions would allow her to write those down to the game so that she can reason somewhere without .
