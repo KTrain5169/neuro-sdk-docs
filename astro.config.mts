@@ -13,14 +13,14 @@ export default defineConfig({
   base: "/neuro-sdk-docs",
   integrations: [
     starlight({
-      favicon: "/neuro-sdk-docs-art.png",
+      favicon: "/neuro-sdk-docs-art.jpg",
       title: "Unofficial Neuro Game SDK docs",
       head: [
         {
           tag: "link",
           attrs: {
             rel: "icon",
-            href: "/neuro-sdk-docs-art.png",
+            href: "/neuro-sdk-docs-art.jpg",
           },
         },
       ],
