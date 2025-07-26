@@ -187,7 +187,7 @@ export default function SidebarComponent(
               </button>
             );
           } else if (isPageButton(item)) {
-            const href = normalizePath(`${baseURL}/${item.slug}`);
+            const href = normalizePath(`/${item.slug}`);
             const isActive =
               currentPath === href || currentPath.startsWith(href + "/");
             return (
@@ -205,7 +205,7 @@ export default function SidebarComponent(
           } else if (typeof item === "string") {
             const slug = item.toLowerCase();
             const label = item.split("/").pop() || item;
-            const href = normalizePath(`${baseURL}/${slug}`);
+            const href = normalizePath(`/${slug}`);
             const isActive =
               currentPath === href || currentPath.startsWith(href + "/");
             return (
