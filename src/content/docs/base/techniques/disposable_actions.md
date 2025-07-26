@@ -110,6 +110,18 @@ Once Neuro sends an action command back, then unregister the actions _before_ an
     ]
   }
 }
+
+// afterwards
+
+{
+  "command": "action/result",
+  "game": "Tic Tac Toe vs Neuro",
+  "data": {
+    "id": "action_1",
+    "success": true,
+    "message": "Successfully placed O."
+  }
+}
 ```
 
 This disposes the action before Neuro sends another action, preventing potential race conditions from happening.
@@ -121,6 +133,8 @@ If the `actions/force` fails, you _should not_ unregister the actions, and inste
 In our example, this might happen if Neuro tries to place on an already occupied square. In that case, instead of sending the above unregister packet, we send the following action result packet:
 
 ```json
+// Do not unregister actions!
+
 {
   "command": "action/result",
   "game": "Tic Tac Toe vs Neuro",
@@ -132,4 +146,4 @@ In our example, this might happen if Neuro tries to place on an already occupied
 }
 ```
 
-As stated on the [action result page](/base/actions/result), if Neuro receives an unsuccessful result, she will immediately retry it, and if there are no valid actions that Neuro can execute and is part of the action force, [the action force will be ignored](base/actions/force). If you're not careful, this can enter a softlocked state within your game due to your game expecting Neuro to send an action that she won't send.
+As stated on the [action result page](/base/actions/result), if Neuro receives an unsuccessful result, she will immediately retry it, and if there are no valid actions that Neuro can execute and is part of the action force, [the action force will be ignored](base/actions/force). If you're not careful, this can enter a softlocked state within your game due to your game expecting Neuro to send an action that she won't send (and won't know how to send).
