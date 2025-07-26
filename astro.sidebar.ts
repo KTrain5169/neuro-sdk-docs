@@ -36,7 +36,6 @@ import {
   FaList,
   FaScrewdriver,
   FaHands,
-  FaClipboardCheck,
 } from "react-icons/fa";
 import { FaBoxArchive, FaClockRotateLeft, FaRotateLeft } from "react-icons/fa6";
 import { FiCheckSquare } from "react-icons/fi";
@@ -239,13 +238,6 @@ const raw: (RawGroup | PageButton)[] = [
     ],
   },
   {
-    key: "rust",
-    subdir: "rs",
-    label: "Rust SDK",
-    icon: SiRust,
-    items: [],
-  },
-  {
     key: "javascript",
     subdir: "js",
     label: "JavaScript SDK",
@@ -269,7 +261,6 @@ const raw: (RawGroup | PageButton)[] = [
         items: [
           "concepts/handler",
           "concepts/connection",
-          "tutorial/getting_started",
         ],
       },
       {
@@ -278,27 +269,6 @@ const raw: (RawGroup | PageButton)[] = [
         items: ["api/connection", "api/messaging", "api/errors"],
       },
     ],
-  },
-  {
-    key: "java",
-    subdir: "jar",
-    label: "Java SDK",
-    icon: FaJava,
-    items: [],
-  },
-  {
-    key: "lua",
-    subdir: "lua",
-    label: "Lua SDK",
-    icon: SiLua,
-    items: [],
-  },
-  {
-    key: "c",
-    subdir: "c",
-    label: "C SDK",
-    icon: SiC,
-    items: ["overview"],
   },
   {
     key: "python",
@@ -312,7 +282,6 @@ const raw: (RawGroup | PageButton)[] = [
         items: [
           "concepts/architecture",
           "concepts/connection",
-          "tutorial/getting-started",
         ],
       },
       {
@@ -321,13 +290,6 @@ const raw: (RawGroup | PageButton)[] = [
         items: ["api/connection", "api/messaging", "api/errors"],
       },
     ],
-  },
-  {
-    key: "kotlin",
-    subdir: "kt",
-    label: "Kotlin SDK",
-    icon: SiKotlin,
-    items: [],
   },
   {
     key: "more_tools",
