@@ -19,6 +19,15 @@ on:
             - .gitignore
     workflow_dispatch: # retry
 
+concurrency:
+    group: "pages"
+    cancel-in-progress: false
+
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+
 jobs:
     build:
         name: Build Astro site
