@@ -6,6 +6,8 @@ import {
 } from "../../astro.sidebar";
 import "../styles/Sidebar.css";
 
+const baseURL = import.meta.env.BASE_URL || ""
+
 // Allow SidebarComponent to accept arbitrary extra props (like client:load)
 export interface SidebarProps {
   [key: string]: any;
@@ -46,7 +48,7 @@ function renderItems(
         const slug = item.toLowerCase();
         const rawLabel = item.split("/").pop() || item;
         const label = rawLabel.replace(/_/g, " ");
-        const href = normalizePath(`/${prefix}/${slug}`);
+        const href = normalizePath(`${baseURL}/${prefix}/${slug}`);
         const isActive =
           normCurrent === href || normCurrent.startsWith(href + "/");
         return (
@@ -60,7 +62,7 @@ function renderItems(
         );
       } else if (isPageButton(item)) {
         const slug = item.slug.toLowerCase();
-        const href = normalizePath(`/${prefix}/${slug}`);
+        const href = normalizePath(`${baseURL}/${prefix}/${slug}`);
         let isActive: boolean;
 
         if (slug === "") {
@@ -149,7 +151,10 @@ export default function SidebarComponent(
   useEffect(() => {
     // 1) Mark mounted and grab the path
     setMounted(true);
-    const rawPath = window.location.pathname;
+    let rawPath = window.location.pathname;
+    if (baseURL && baseURL !== "" && rawPath.startsWith(baseURL)) {
+      rawPath = rawPath.slice(baseURL.length)
+    }
     const path = rawPath.toLowerCase();
     setCurrentPath(rawPath);
 
@@ -182,8 +187,7 @@ export default function SidebarComponent(
               </button>
             );
           } else if (isPageButton(item)) {
-            const slug = item.slug.toLowerCase();
-            const href = normalizePath(`/${item.slug}`);
+            const href = normalizePath(`${baseURL}/${item.slug}`);
             const isActive =
               currentPath === href || currentPath.startsWith(href + "/");
             return (
@@ -201,7 +205,7 @@ export default function SidebarComponent(
           } else if (typeof item === "string") {
             const slug = item.toLowerCase();
             const label = item.split("/").pop() || item;
-            const href = normalizePath(`/${slug}`);
+            const href = normalizePath(`${baseURL}/${slug}`);
             const isActive =
               currentPath === href || currentPath.startsWith(href + "/");
             return (

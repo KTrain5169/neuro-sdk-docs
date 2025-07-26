@@ -209,35 +209,6 @@ const raw: (RawGroup | PageButton)[] = [
     ],
   },
   {
-    key: "game_engines",
-    subdir: "engines",
-    label: "SDKs for Game Engines",
-    icon: FaGamepad,
-    items: [
-      {
-        key: "unity",
-        subdir: "unity",
-        label: "Unity SDK",
-        icon: SiUnity,
-        items: [],
-      },
-      {
-        key: "godot",
-        subdir: "gdot",
-        label: "Godot SDK (GDScript)",
-        icon: SiGodotengine,
-        items: [],
-      },
-      {
-        key: "gamemaker",
-        subdir: "gmaker",
-        label: "Gamemaker SDK",
-        icon: SiGamemaker,
-        items: [],
-      },
-    ],
-  },
-  {
     key: "javascript",
     subdir: "js",
     label: "JavaScript SDK",
@@ -266,7 +237,7 @@ const raw: (RawGroup | PageButton)[] = [
       {
         key: "javascript.api",
         label: "API Reference",
-        items: ["api/connection", "api/messaging", "api/errors"],
+        items: ["api/client", "api/messaging", "api/errors"],
       },
     ],
   },
@@ -287,7 +258,7 @@ const raw: (RawGroup | PageButton)[] = [
       {
         key: "python.api",
         label: "API Reference",
-        items: ["api/connection", "api/messaging", "api/errors"],
+        items: ["api/client", "api/messaging", "api/errors"],
       },
     ],
   },

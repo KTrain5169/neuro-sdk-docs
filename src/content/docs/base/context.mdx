@@ -2,6 +2,8 @@
 title: Context for Neuro
 ---
 
+import { Aside } from '@astrojs/starlight/components'
+
 To send Neuro new context regarding your game, send Neuro this packet:
 
 ```ts
@@ -19,6 +21,12 @@ To send Neuro new context regarding your game, send Neuro this packet:
 
 - `message` - The context message Neuro will keep.
 - `silent` - Whether or not Neuro will be prompted to vocally react to the command. Note that `true` doesn't mean she'll always be silent about it (such as if the context message was an error message), and that `false` doesn't mean she'll always react to it (she might be busy talking to chat or someone else).
+
+<Aside>
+
+If you send a context before an action result, the context will be merged into her context window *after* the action result is sent.
+
+</Aside>
 
 ## Techniques in conjunction with this packet
 

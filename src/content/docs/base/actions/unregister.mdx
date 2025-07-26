@@ -22,9 +22,15 @@ This will remove Neuro's access to the actions specified, preventing her from us
 
 - `actions` - An array of strings that each correspond to a currently registered action.
 
-<Aside>
+<Aside type="tip">
 
 If you unregister an action that isn't registered, that action will be ignored.
+
+</Aside>
+
+<Aside>
+
+Neuro may sneak an action in right before you unregister an action. Your game should be able to handle that case (i.e. letting Neuro know she failed to execute the action).
 
 </Aside>
 
