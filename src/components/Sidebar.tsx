@@ -62,7 +62,7 @@ function renderItems(
         );
       } else if (isPageButton(item)) {
         const slug = item.slug.toLowerCase();
-        const href = normalizePath(`${baseURL}/${prefix}/${slug}`);
+        const href = normalizePath(`/${prefix}/${slug}`);
         let isActive: boolean;
 
         if (slug === "") {
