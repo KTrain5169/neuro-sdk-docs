@@ -211,7 +211,7 @@ const raw: (RawGroup | PageButton)[] = [
   {
     key: "javascript",
     subdir: "js",
-    label: "(WIP ssection) JavaScript SDK",
+    label: "(WIP section) JavaScript SDK",
     icon: SiJavascript,
     items: [
       {
