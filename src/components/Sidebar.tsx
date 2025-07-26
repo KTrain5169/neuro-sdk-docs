@@ -193,7 +193,7 @@ export default function SidebarComponent(
             return (
               <a
                 key={item.key}
-                href={href}
+                href={baseURL ? baseURL + href : href}
                 className={`sidebar-button standalone${isActive ? " active" : ""}`}
               >
                 {item.icon && (
@@ -211,7 +211,7 @@ export default function SidebarComponent(
             return (
               <a
                 key={item}
-                href={href}
+                href={baseURL ? baseURL + href : href}
                 className={`sidebar-button${isActive ? " active" : ""}`}
               >
                 {label.charAt(0).toUpperCase() + label.slice(1)}
