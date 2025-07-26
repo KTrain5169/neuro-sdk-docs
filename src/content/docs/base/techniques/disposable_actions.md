@@ -1,5 +1,6 @@
 ---
 title: Disposable actions
+description: Allow Neuro to only use an action once during an action force.
 banner:
   content: |
     This site is under <b>heavy WIP</b>.

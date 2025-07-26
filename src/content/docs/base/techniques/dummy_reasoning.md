@@ -1,5 +1,6 @@
 ---
 title: Dummy reasoning actions
+description: Let Neuro reason her answers without saying anything out loud.
 banner:
   content: |
     This site is under <b>heavy WIP</b>.

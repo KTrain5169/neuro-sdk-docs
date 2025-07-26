@@ -1,5 +1,6 @@
 ---
-title: Re-register actions after a crash
+title: Re-register actions
+description: Re-register actions to Neuro after she crashes.
 banner:
   content: |
     This site is under <b>heavy WIP</b>.
