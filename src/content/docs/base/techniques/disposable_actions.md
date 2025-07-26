@@ -1,5 +1,10 @@
 ---
 title: Disposable actions
+banner:
+  content: |
+    This site is under <b>heavy WIP</b>.
+    You've most likely been given access to this site to point towards a concept, or something.
+    Either way, take some of the info on this page with a grain of salt.
 ---
 
 Disposable actions are used to refer to actions that can be used a certain amount of time before being unregistered.
