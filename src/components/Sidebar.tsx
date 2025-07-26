@@ -48,13 +48,13 @@ function renderItems(
         const slug = item.toLowerCase();
         const rawLabel = item.split("/").pop() || item;
         const label = rawLabel.replace(/_/g, " ");
-        const href = normalizePath(`${baseURL}/${prefix}/${slug}`);
+        const href = normalizePath(`/${prefix}/${slug}`);
         const isActive =
           normCurrent === href || normCurrent.startsWith(href + "/");
         return (
           <a
             key={`str-${depth}-${item}`}
-            href={href}
+            href={baseURL ? baseURL + href : href}
             className={`sidebar-item${isActive ? " active" : ""}`}
           >
             {label.charAt(0).toUpperCase() + label.slice(1)}
@@ -74,7 +74,7 @@ function renderItems(
         return (
           <a
             key={`pb-${depth}-${item.key}`}
-            href={href}
+            href={baseURL ? baseURL + href : href}
             className={`sidebar-item${isActive ? " active" : ""}`}
           >
             {item.icon && <item.icon className="sidebar-icon page" />}
