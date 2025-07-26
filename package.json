@@ -16,14 +16,14 @@
     "@astrojs/preact": "~4.1.0",
     "@astrojs/starlight": "~0.35.1",
     "astro": "~5.12.3",
-    "preact": "~10.26.5",
+    "preact": "~10.26.9",
     "preact-compat": "~3.19.0",
     "react-icons": "~5.5.0",
-    "sharp": "~0.32.5"
+    "sharp": "~0.34.3"
   },
   "devDependencies": {
     "@astrojs/check": "~0.9.4",
-    "prettier": "~3.5.3",
+    "prettier": "~3.6.2",
     "typescript": "~5.8.3"
   }
 }

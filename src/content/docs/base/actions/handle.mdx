@@ -25,8 +25,8 @@ Action commands from Neuro, whether forced or voluntary, have the following stru
 
 ## `data` Parameters
 
-- `id` - a string that identifies this specific execution. You'll need to use this ID when returning an [action result](/base/actions/result).
-- `name` - the name of the action Neuro wants to execute.
+- `id` - a string that identifies this specific execution. You'll need to use this ID when returning an [action result](/neuro-sdk-docs/base/actions/result).
+- `name` - the name of the action Neuro wants to execute. During [action forces](/neuro-sdk-docs/base/actions/force), this will influence whether or not Neuro retries the entire action force.
 - `data` - If the action has a schema attached, this field contains the data to fulfill the schema.
 
 <Aside type="danger">
@@ -48,4 +48,4 @@ You could try and catch this to send back an unsuccessful action result.
 ## More info about handling actions
 
 - You should be able to handle an action being sent the moment you unregister that action.
-- Neuro will be waiting for the action result before sending another action. For that reason, action results should be about validation, not actual results. [See more at the action result page](/base/actions/result)
+- Neuro will be waiting for the action result before sending another action. For that reason, action results should be about validation, not actual results. [See more at the action result page](/neuro-sdk-docs/base/actions/result)

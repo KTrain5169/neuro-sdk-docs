@@ -8,7 +8,7 @@ banner:
     Either way, take at least some of the info on this page with a grain of salt, and also don't expect much info since it's very incomplete on content.
 ---
 
-import { Card, CardGrid } from "@astrojs/starlight/components";
+import { LinkCard, CardGrid } from "@astrojs/starlight/components";
 
 Proposals are adjustments to the API specs that are planned, but not implemented. Because these aren't implemented yet, the current version of Neuro don't use these APIs.
 In addition, SDKs and simulators vary in terms of supporting these APIs. For that reason, games shouldn't be relying or needing to support these APIs until they are confirmed to now be in the current specs.
@@ -16,10 +16,6 @@ In addition, SDKs and simulators vary in terms of supporting these APIs. For tha
 Here are the list of current proposals:
 
 <CardGrid>
-  <a href="/base/proposals/shutdown">
-    <Card title="Shutdown commands for Neuro" icon="close" />
-  </a>
-  <a href="/base/proposals/reregister">
-    <Card title="Re-register all commands for Neuro" icon="error" />
-  </a>
+  <LinkCard title="Shutdown commands for Neuro" />
+  <LinkCard title="Re-register all commands for Neuro" />
 </CardGrid>

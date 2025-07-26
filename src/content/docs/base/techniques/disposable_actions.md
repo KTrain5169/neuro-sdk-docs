@@ -9,7 +9,7 @@ banner:
 ---
 
 Disposable actions are used to refer to actions that can be used a certain amount of time before being unregistered.
-This technique is often used in conjunction with [action forces](/base/actions/force) to, for example, only allow Neuro to do actions during her turn.
+This technique is often used in conjunction with [action forces](/neuro-sdk-docs/base/actions/force) to, for example, only allow Neuro to do actions during her turn.
 It's a safer way to force an action from Neuro without running the risk of race conditions higher.
 
 ## Making a disposable action
@@ -146,4 +146,4 @@ In our example, this might happen if Neuro tries to place on an already occupied
 }
 ```
 
-As stated on the [action result page](/base/actions/result), if Neuro receives an unsuccessful result, she will immediately retry it, and if there are no valid actions that Neuro can execute and is part of the action force, [the action force will be ignored](base/actions/force). If you're not careful, this can enter a softlocked state within your game due to your game expecting Neuro to send an action that she won't send (and won't know how to send).
+As stated on the [action result page](/neuro-sdk-docs/base/actions/result), if Neuro receives an unsuccessful result, she will immediately retry it, and if there are no valid actions that Neuro can execute and is part of the action force, [the action force will be ignored](/neuro-sdk-docs/base/actions/force). If you're not careful, this can enter a softlocked state within your game due to your game expecting Neuro to send an action that she won't send (and won't know how to send).
