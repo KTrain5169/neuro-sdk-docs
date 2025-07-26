@@ -32,6 +32,13 @@ If you don't have Python, [download the official distribution here](https://pyth
 
 </Aside>
 
+<Aside>
+
+Gary has a non-Python peer dependency (as in, you need to download this yourself) in [CUDA Studio](https://developer.nvidia.com/cuda-downloads).
+You also need to set the `CUDA_PATH` environment variable to the install location (usually `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6`).
+
+</Aside>
+
 <Steps>
 
 1. Clone Gary into a folder:
@@ -48,6 +55,7 @@ If you don't have Python, [download the official distribution here](https://pyth
    ```sh
    uv run gary
    ```
+   It shouldn't start immediately as some configuration is required, but this is to verify everything works and no unknown error pop up.
 
    <Aside type="caution">
 
@@ -62,3 +70,159 @@ If you don't have Python, [download the official distribution here](https://pyth
 ### Before startup
 
 Gary does not come with any models by default. As such, you'll need to download a model yourself to use.
+
+Once you have your model downloaded, place it in the repository, and rename it to have an `_` at the start (so it gets ignored by Git).
+You should also copy `config.yaml` and make a new config file (whose name also starts with `_`), then customise it to point to your model and set other params.
+Finally, start Gary with this command:
+
+```sh
+uv run gary --config <YOUR_CONFIG>.yaml # optional: --preset <PRESET_NAME>
+```
+
+or configure using a .env file:
+
+```env
+GARY_CONFIG_FILE=_your_config.yaml
+GARY_CONFIG_PRESET=randy
+```
+
+And it should now launch successfully.
+
+<Aside>
+
+Not sure where to get models?
+
+Quoting Govorunb:
+
+"This [Llama 3.1 8B](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF/blob/main/Meta-Llama-3.1-8B-Instruct-Q5_K_L.gguf) quantization by [bartowski](https://huggingface.co/bartowski) is a good starting point.
+
+It takes around 8GB VRAM, which is [common](https://store.steampowered.com/hwsurvey). Configure engine_params.n_ctx to 8192 for more working memory, or 6144 for a slight speedup.
+
+If the 8B model is too slow, try a smaller [quantization](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF#download-a-file-not-the-whole-branch-from-below). 
+Otherwise, try your luck with a [3B model](https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF/blob/main/Llama-3.2-3B-Instruct-Q6_K_L.gguf).
+
+On the other hand, if you have more VRAM or don't mind slower responses, you can look for a larger model - 13B/14B is the next step.
+
+Generally, aim for a model/quantization whose file size is 1-2 GB below your VRAM (you can give it another GB of headroom to fit a bigger context window)."
+
+</Aside>
+
+### After startup
+
+Gary's web panel should be accessible at `http://localhost:8001` (or whatever the port you set in the config file is, plus 1). You should see Gary's configuration panel.
+
+With this web panel, you can see the incoming/outgoing packets by the game/Gary, as well as the list of actions and a config on the right-hand side.
+
+Toggling "Tony Mode" stops using the model and instead acts similar to [Tony](/neuro-sdk-docs/sim/Tony), allowing you to send actions on behalf of your model.
+
+<Aside type="tip">
+
+Tips from Govorunb about using your model:
+
+Smaller models are generally less intelligent than larger ones. A 3B model may not be able to perform logical leaps or multi-step actions without [extreme handholding](https://github.com/Govorunb/gary/blob/843ea8d01bce2b46396fcdea1b78675eb607d88e/config.py#L90).
+
+Since this project is focused on local models, success will depend on your model/hardware. Gary might turn out to be dumber than a rock when it comes to strategy and decisionmaking (which is ironic because it's made of rock) - maybe even *worse than Randy*.
+If so, Gary probably cannot help you and you'd be better off using [Randy](https://github.com/VedalAI/neuro-game-sdk/blob/main/Randy/README.md), [Tony](https://github.com/Pasu4/neuro-api-tony), or [Jippity](https://github.com/EnterpriseScratchDev/neuro-api-jippity) instead.
+
+That being said, it's *always* better in the long run to invest effort into refining your prompts to make things clearer.
+Getting a less intelligent model to successfully play your game will help more intelligent models make even smarter decisions.
+
+**Prompting (descriptions, context)**
+
+- Use direct and concise language
+	- Having less text to process makes the LLM faster and more focused
+	- Aim for high information density - consider running your prompts through a summarizer
+- Do your best to keep a consistent tone
+	- All context influences the response and context that is out-of-tone can throw off the model
+	- (opinion) Flowery or long-winded descriptions should be used very sparingly
+- Natural language (e.g. `Consider your goals`) is okay - it is a language model, after all
+	- That said, language models are not humans - watch this short [video](https://www.youtube.com/watch?v=7xTGNNLPyMI) for a very brief overview of how LLMs work
+- If you are testing with a small model (under 10B):
+	- Keep in mind Neuro might act differently from your model
+	- Including/omitting common-sense stuff can be hit or miss
+	- Rules with structured info (e.g. with [Markdown](https://www.markdownguide.org/basic-syntax/)) seem to perform better than unstructured
+	- Try more models (and try a bigger model - even if it's slower) to see what info is generally useful and what's just a quirk of your specific model
+
+**Managing context**
+Generally, LLMs prioritize the most recent context more when generating.
+
+- Send a description of the game and its rules on startup
+- Keep context messages relevant to upcoming actions/decisions
+- Send reminders of rules/tips/state at breakpoints, e.g. starting a new round
+
+If an action fails because of game state (e.g. trying to place an item in an occupied slot), you should attempt, preferrably in this particular order:
+1. Disallow the illegal action (by removing the illegal parameter from the schema, or by unregistering the action entirely)
+	- This is the best option as there's no chance for mistakes at all (unless Neuro decides to ignore the schema)
+2. Suggest a suitable alternative in the result message
+	- For example, `"Battery C is currently charging and cannot be removed. Batteries A and B are charged and available."`
+3. Send additional context as a state reminder on failure so the model can retry with more knowledge
+4. Or, register a query-like action (e.g. `check_inventory`) that allows the model to ask about the state at any time and just hope for the best
+
+</Aside>
+
+## Known issues
+
+Taken (more or less) verbatim from the repository README.
+
+### Context trimming
+
+Trimming context (for continuous generation) only works with the `llama_cpp` engine. Other engines will instead fully truncate context, and may rarely fail due to overrunning the context window.
+
+### Guidance token forwarding
+
+There's a quirk with the way guidance enforces grammar that can sometimes negatively affect chosen actions.
+
+Basically, if the model wants something invalid, it will pick a similar or seemingly arbitrary valid option. For example:
+- The game is about serving drinks at a bar, with valid items to pick up/serve being `"vodka"`, `"gin"`, etc
+- The model gets a bit too immersed and hallucinates about pouring drinks into a glass (which is not an action)
+- When asked what to do next, the model *wants* to call e.g. `pick up` on `"glass of wine"`
+- Since this is not a valid option, guidance picks `"gin"` because *(gives a long explanation)*
+
+For nerds - guidance uses the model to generate the starting token probabilities and forwards the rest as soon as it's fully disambiguated.
+
+In this case, `"g` has the highest likelihood of all valid tokens, so it gets picked; then, `in"` is auto-completed because `"gin"` is the only remaining option (of all valid items) that starts with `"g`.
+
+[Learn more](https://github.com/guidance-ai/guidance/issues/564)
+
+In a case like this, it would have been better to just let it fail and retry - oh well, at least it's fast.
+
+### JSON schema support
+
+Not all JSON schema keywords are supported in Guidance. You can find an up-to-date list [here](https://github.com/Govorunb/gary/blob/main/src/gary/util/utils.py#L68).
+
+Unsupported keywords will produce a warning and be excluded from the grammar.
+
+> [!Warning]
+> This means that the LLM **might not fully comply with the schema**.
+> 
+> It's very important that the game validates the backend's responses and sends back meaningful and interpretable error messages.
+
+Following [the Neuro API spec](https://github.com/VedalAI/neuro-game-sdk/blob/main/API/SPECIFICATION.md#action) is generally safe. If you find an action schema is getting complex or full of obscure keywords, consider logically restructuring it or breaking it up into multiple actions.
+
+#### Miscellaneous jank
+
+- The web interface can be a bit flaky - keep an eye out for any exceptions in the terminal window and, when in doubt, refresh the page
+
+### Implementation-specific behaviour
+
+There may be cases where other backends (including Neuro) may behave differently.
+
+Differences marked with 🚧 will be resolved or obsoleted by the [v2 of the API](https://github.com/VedalAI/neuro-game-sdk/discussions/58).
+- Gary will always be different from Neuro in some aspects, specifically:
+	- Processing other sources of information like vision/audio/chat (for obvious reasons)
+	- Gary is not real and will never message you on Discord at 3 AM to tell you he's lonely 😔
+	- Myriad other things like response timings, text filters, allowed JSON schema keywords, long-term memories, etc
+- 🚧 Registering an action with an existing name will replace the old one (by default, configurable through `gary.existing_action_policy`)
+- Only one active websocket connection is allowed per game; when another tries to connect, either the old or the new connection will be closed (configurable through `gary.existing_connection_policy`)
+- 🚧 Gary sends `actions/reregister_all` on every connect (instead of just reconnects, as in the spec)
+- etc etc, just search for "IMPL" in the code
+
+#### Remote services? (OpenAI, Anthropic, Google, Azure)
+
+Only local models are supported. Guidance does allow using remote services, but it cannot enforce grammar/structured outputs if it can't hook itself into the inference process, so it's *more than likely* it'll just throw exceptions because of invalid output instead. 
+
+![log excerpt showing remote generation failed after exceeding the limit of 10 attempts](https://i.imgur.com/UNtnhdV.png)
+
+Therefore, they are not exposed as an option at all. You should use [Jippity](https://github.com/EnterpriseScratchDev/neuro-api-jippity) instead anyway.
+
+For more info, check the [guidance README](https://github.com/guidance-ai/guidance/blob/46340aa58b51a0714066a9faeba18c6cb2128f34/README.md#vertex-ai) or [this issue comment](https://github.com/guidance-ai/guidance/issues/502#issuecomment-1845893780).

@@ -115,6 +115,8 @@ To set up Jippity:
 
 ## Configuration
 
+### Before startup
+
 Jippity is configured exclusively using environmental variables. The table of variables to configure Jippity is below:
 
 | Environment Variable  | Description                                                                                                                                     | Required | Example       |
@@ -132,9 +134,9 @@ Jippity is configured exclusively using environmental variables. The table of va
 ## Startup
 
 On startup, Jippity won't be connected to OpenAI immediately. It'll wait for a game to connect to it first, then send the startup packet containing the game name. Jippity should respond with some comments about it.
-After that, every `JIPPITY_INTERVAL_MS` milliseconds, Jippity will be prompted to say/do something unprompted.
+After that, every `JIPPITY_INTERVAL_MS` milliseconds{/* really? */}, Jippity will be prompted to say/do something unprompted.
 Jippity will be notified immediately of an action force, as expected.
 
 ## Known issues
 
-- Old messages are not cleared from the AI's memory, so it will eventually pile up contexts, leading to a crash (think memory leaks). Token limit is currently hardcoded to 2048.
+- Old messages are not cleared from the AI's memory, so it will eventually pile up contexts, leading to a crash (think of it like memory leaks). Token limit is currently hardcoded to 2048.
