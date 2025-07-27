@@ -81,7 +81,7 @@ uv run gary --config <YOUR_CONFIG>.yaml # optional: --preset <PRESET_NAME>
 
 or configure using a .env file:
 
-```env
+```txt
 GARY_CONFIG_FILE=_your_config.yaml
 GARY_CONFIG_PRESET=randy
 ```
@@ -144,6 +144,7 @@ Getting a less intelligent model to successfully play your game will help more i
 	- Try more models (and try a bigger model - even if it's slower) to see what info is generally useful and what's just a quirk of your specific model
 
 **Managing context**
+
 Generally, LLMs prioritize the most recent context more when generating.
 
 - Send a description of the game and its rules on startup
@@ -157,6 +158,8 @@ If an action fails because of game state (e.g. trying to place an item in an occ
 	- For example, `"Battery C is currently charging and cannot be removed. Batteries A and B are charged and available."`
 3. Send additional context as a state reminder on failure so the model can retry with more knowledge
 4. Or, register a query-like action (e.g. `check_inventory`) that allows the model to ask about the state at any time and just hope for the best
+
+Quoted from the repository README.
 
 </Aside>
 
