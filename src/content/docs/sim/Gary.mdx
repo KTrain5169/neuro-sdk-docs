@@ -195,10 +195,13 @@ Not all JSON schema keywords are supported in Guidance. You can find an up-to-da
 
 Unsupported keywords will produce a warning and be excluded from the grammar.
 
-> [!Warning]
-> This means that the LLM **might not fully comply with the schema**.
-> 
-> It's very important that the game validates the backend's responses and sends back meaningful and interpretable error messages.
+<Aside type="caution">
+
+This means that the LLM **might not fully comply with the schema**.
+
+It's very important that the game validates the backend's responses and sends back meaningful and interpretable error messages.
+
+</Aside>
 
 Following [the Neuro API spec](https://github.com/VedalAI/neuro-game-sdk/blob/main/API/SPECIFICATION.md#action) is generally safe. If you find an action schema is getting complex or full of obscure keywords, consider logically restructuring it or breaking it up into multiple actions.
 
